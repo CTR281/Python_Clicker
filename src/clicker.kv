@@ -1,14 +1,18 @@
 <ClickerCell>:
-    #size: 100, 100
     canvas:
         Color:
             rgba: 0,0,1,1
         Ellipse:
             pos:self.pos
-            size:self.weight, self.weight
+            size:self.cell_size
 
-<Ennemy>:
-
+<Enemy>:
+    canvas:
+        Color:
+            rgba: 1, 0, 0, 1
+        Ellipse:
+            pos:self.pos
+            size:self.enemy_size
 
 <ClickerGame>:
     cell : clicker_cell
@@ -38,6 +42,7 @@
             text:"Feed!"
             font_size: 20
             size_hint: 24/4,1.5
+            on_press: clicker_cell.grow()
 
 
         ClickerCell:
@@ -47,7 +52,7 @@
 
         Label:
             id:health
-            text:str(clicker_cell.weight)
+            text:str(clicker_cell.cell_weight-1)
             font_size:"40"
             top:root.top-50
             center_x:root.width * 3 / 8
@@ -61,11 +66,11 @@
             color: 1,0,0,1
 
         Label:
-            text:clicker_cell.dead
+            text:root.gameover
             font_size:"70"
             color:0,0,0,1
-            center_x:clicker_cell.center_x
-            center_y:clicker_cell.center_y - 5
+            center: root.width * 3 / 8, root.height * 5 / 8
+
 
         Label:
             text:"Feed Power:" +str(clicker_cell.growth_factor)
@@ -79,6 +84,7 @@
             font_size:"40"
             color:1,0,0,1
             center: root.width*7/8, root.height-20
+
 
 
 

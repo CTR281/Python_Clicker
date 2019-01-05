@@ -1,0 +1,74 @@
+<ClickerCell>:
+    #size: 100, 100
+    canvas:
+        Color:
+            rgba: 0,0,1,1
+        Ellipse:
+            pos:self.pos
+            size:self.weight, self.weight
+
+
+<ClickerGame>:
+    cell : clicker_cell
+    health : health
+    feed: feed_button
+    FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size: root.size
+                pos:root.pos
+        canvas.after:
+            Color:
+                rgba: 0,0,0,1
+            Rectangle:
+                size: 10, root.height
+                pos: root.width * 3 / 4, 0
+
+            Rectangle:
+                size: root.width * 3 / 4, 10
+                pos: 0, root.height / 4
+
+        Button:
+            id: feed_button
+            background_color: 0,1,0,1
+            text:"Feed!"
+            font_size: 20
+            size_hint: 24/4,1.5
+
+
+        ClickerCell:
+            id: clicker_cell
+            pos: root.width * 3 / 8, root.height * 5 / 8
+            center: root.width * 3 / 8, root.height * 5 / 8
+
+        Label:
+            id:health
+            text:str(clicker_cell.weight)
+            font_size:"40"
+            top:root.top-50
+            center_x:root.width * 3 / 8
+            color: 0, 0, 1, 1
+
+        Label:
+            text:str(int(root.timer))
+            font_size:"40"
+            top: root.height
+            center_x:20
+            color: 1,0,0,1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

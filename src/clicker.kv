@@ -64,7 +64,7 @@
 
     Label:
         id:health
-        text:str(clicker_cell.cell_weight-1)
+        text:str(int(clicker_cell.cell_weight-1))
         font_size:"40"
         top:root.top-50
         center_x:root.width * 3 / 8
@@ -117,7 +117,7 @@
     AutoClicker:
         id: tier1
         text:"Autofeed 1"
-        buy_cost: 10
+        buy_cost: 20
         feed_per_second:1
         center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
 
@@ -134,11 +134,11 @@
         id: tier2
         text:"Autofeed 2"
         feed_per_second:5
-        buy_cost: 100
+        buy_cost: 200
         center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
 
     Label:
-        text:"Decay:"+str(clicker_cell.fade_factor)
+        text:"Decay:"+str(int(clicker_cell.fade_factor))
         font_size:"30"
         color:0.5,0,1,1
         center_x:55

@@ -9,6 +9,7 @@ from kivy.vector import Vector
 from kivy.clock import Clock
 from random import randint
 
+
 class Enemy(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
@@ -24,6 +25,18 @@ class Enemy(Widget):
             cell.weight -= self.weight
             game.remove_widget(self)
 
+
+class AutoClicker(Widget):
+    feed_per_second = NumericProperty(0)
+    amount = NumericProperty(0)
+    buy_cost = NumericProperty(0)
+    tier = NumericProperty(0)
+
+    def __init__(self, tier, **kwargs):
+        super(AutoClicker, self).__init__(**kwargs)
+        self.tier = tier
+    def autofeed(self):
+        return self.feed_per_second * self.amount
 
 
 class ClickerCell(Widget):
@@ -49,27 +62,29 @@ class ClickerCell(Widget):
                 self.cell_weight = 1
                 self.pos= game.width * 3 / 8, game.height * 5 / 8
 
-
+    def autofeed(self, autoclicker):
+        self.cell_weight += autoclicker.autofeed()
             
 
 class ClickerGame(Widget):
 
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
+    auto_tier1 = AutoClicker(1)
     timer = NumericProperty(0)
     gameover=""
-    enemy_list=[]
+    enemy_list = []
     phase2 = False
 
     def spawn_enemy(self):
-        enemy=Enemy()
+        enemy = Enemy()
         self.add_widget(enemy)
         return enemy
 
 
     def update(self, dt):
         self.timer += 1
-        if self.timer >5:
+        if self.timer > 5:
             self.phase2= True
         if self.timer in self.cell.fade_list:
             self.cell.fade_factor +=1
@@ -85,11 +100,11 @@ class ClickerGame(Widget):
         if self.cell.cell_weight == 1:
             self.gameover="Game Over"
 
+        self.cell.autofeed(self.auto_tier1)
         
         print(self.cell.cell_weight == 1)
         print(self.gameover)
         #print(self.cell.center)
-        
 
 
 class ClickerApp(App):
@@ -98,10 +113,6 @@ class ClickerApp(App):
         Clock.schedule_interval(self.game.update, int(1))
         return self.game
 
-
-
-
-        
 
 if __name__ == '__main__':
     ClickerApp().run()

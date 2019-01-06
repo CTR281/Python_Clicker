@@ -22,8 +22,6 @@
         pos:root.pos
         center:root.center
 
-
-
 <ClickerGame>:
     cell : clicker_cell
     health : health
@@ -47,15 +45,6 @@
         Rectangle:
             size: root.width * 3 / 4, 10
             pos: 0, root.height / 4
-
-    Button:
-        id: feed_button
-        background_color: 0,1,0,1
-        text:"Feed!"
-        font_size: 20
-        size:root.width * 3 / 4, root.height * 1 / 4
-        on_press: clicker_cell.grow()
-
 
     ClickerCell:
         id: clicker_cell
@@ -85,7 +74,7 @@
 
 
     Label:
-        text:"Feed Power:" +str(clicker_cell.growth_factor)
+        text:"Feed Power:" +str(clicker_cell.feedpower)
         font_size:"30"
         color:0,1,0,1
         center_x:root.width * 5/8
@@ -97,6 +86,29 @@
         color:0,1,0,1
         center_x:90
         center_y:root.height*1/4 + 25
+
+    Label:
+        text:"Decay:"+str(int(clicker_cell.fade_factor))
+        font_size:"30"
+        color:0.5,0,1,1
+        center_x:55
+        center_y:root.height*1/4 +55
+
+    Button:
+        id: feed_button
+        background_color: 0,1,0,1
+        text:"Feed!"
+        font_size: 20
+        size:root.width * 2 / 4, root.height * 1 / 4
+        on_press: clicker_cell.grow()
+
+    Button:
+        id: upgrade_feedpower
+        text: "+1 \n" + str(root.cell.feedpower_upgrade_cost)
+        font_size: "15"
+        on_press: root.cell.upgrade_feedpower()
+        size:root.width * 1/4, root.height * 1/4
+        pos: root.width * 2/4, 0
 
     Label:
         id: upgrade
@@ -136,10 +148,3 @@
         feed_per_second:5
         buy_cost: 200
         center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
-
-    Label:
-        text:"Decay:"+str(int(clicker_cell.fade_factor))
-        font_size:"30"
-        color:0.5,0,1,1
-        center_x:55
-        center_y:root.height*1/4 +55

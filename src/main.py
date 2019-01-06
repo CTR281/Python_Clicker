@@ -37,7 +37,7 @@ class AutoClicker(Widget):
     feed_per_second = NumericProperty(0)
     amount = NumericProperty(0)
     buy_cost = NumericProperty(0)
-    cost_increase = NumericProperty(1.5)
+    cost_increase = NumericProperty(1.2)
     tier = NumericProperty(1)
 
     def autofeed(self):
@@ -48,7 +48,7 @@ class AutoClicker(Widget):
 
     def buy_auto(self):
         self.amount += 1
-        self.buy_cost += int(self.buy_cost * self.cost_increase)
+        self.buy_cost =int(self.buy_cost*self.cost_increase)
 
 
 class ClickerCell(Widget):

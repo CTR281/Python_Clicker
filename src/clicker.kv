@@ -16,11 +16,9 @@
 
 <AutoClicker>:
     Label:
-        text: "Autofeed Tier " + str(root.tier)
-        font_size:"20"
-        color:0,0,0,1
-        center_x = root.center_x
-        center_y = root.center_y
+        text:"Autofeed Tier" + str(root.tier)
+        color: 1,1,1,1
+        font_size: "20"
 
 <ClickerGame>:
     cell : clicker_cell
@@ -28,7 +26,6 @@
     feed: feed_button
     auto_tier1: tier1
     auto_tier2: tier2
-
 
     canvas.before:
         Color:
@@ -96,27 +93,22 @@
         color:1,0,0,1
         center: root.width*7/8, root.height-20
 
-        AutoClicker:
-            id: tier1
-            center_x:root.width * 3 / 5
-            center_y:root.height * 1 / 4 + 30
+    AutoClicker:
+        id: tier1
 
-            Button:
-                id: buy_auto1_btn
-                background_color: 0,0,0,1
-                text:"+1 : " + str(root.auto_tier1.buy_cost)
-                font_size: 20
-                size_hint: 24/4,1.5
-                on_press: root.buy_auto(root.auto_tier1)
+    Button:
+        id: buy_tier1
+        background_color: 0,0,0,1
+        text:"+1 : " + str(root.auto_tier1.buy_cost)
+        font_size: 20
+        on_press: root.buy_auto(root.auto_tier1)
 
-        AutoClicker:
-            id: tier2
-            pos: root.width*7/8, root.height-150
+    AutoClicker:
+        id: tier2
 
-            Button:
-                id: buy_auto2_btn
-                background_color: 0,0,0,1
-                text:"+1 : " + str(root.auto_tier2.buy_cost)
-                font_size: 20
-                size_hint: 24/4,1.5
-                on_press: root.buy_auto(root.auto_tier2)
+    Button:
+        id: buy_tier2
+        background_color: 0,0,0,1
+        text:"+1 : " + str(root.auto_tier2.buy_cost)
+        font_size: 20
+        on_press: root.buy_auto(root.auto_tier2)

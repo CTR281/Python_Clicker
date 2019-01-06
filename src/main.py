@@ -36,7 +36,7 @@ class Enemy(Widget):
 class AutoClicker(Widget):
     feed_per_second = NumericProperty(0)
     amount = NumericProperty(0)
-    buy_cost = NumericProperty(1)
+    buy_cost = NumericProperty(0)
     cost_increase = NumericProperty(1.5)
     tier = NumericProperty(1)
 
@@ -53,7 +53,7 @@ class AutoClicker(Widget):
 
 class ClickerCell(Widget):
     cell_weight = NumericProperty(101)
-    fade_factor = 2
+    fade_factor = NumericProperty(2)
     growth_factor = 1
     fade_list = [15 * k for k in range(100)]
     cell_size = ReferenceListProperty(cell_weight, cell_weight)
@@ -84,8 +84,8 @@ class ClickerCell(Widget):
 class ClickerGame(Widget):
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
-    auto_tier1 = ObjectProperty(tier=1)
-    auto_tier2 = ObjectProperty(tier=2)
+    auto_tier1 = ObjectProperty(tier=StringProperty("1"))
+    auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 
     timer = NumericProperty(0)
     gameover = StringProperty("")
@@ -95,7 +95,7 @@ class ClickerGame(Widget):
 
     def autofeed(self):
         self.cell.change_weight(self.auto_tier1.autofeed())
-        self.cell.cell_weight += self.auto_tier2.autofeed()
+        self.cell.change_weight(self.auto_tier2.autofeed())
 
     def buy_auto(self, autoclicker):
         if self.cell.cell_weight >= autoclicker.get_cost():
@@ -129,7 +129,7 @@ class ClickerGame(Widget):
             if self.timer > 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
-                self.cell.fade_factor += 1
+                self.cell.fade_factor += self.timer/5
             if int(self.timer) % 2 == 0:
                 self.cell.fade(self)
             if self.phase2:
@@ -138,7 +138,7 @@ class ClickerGame(Widget):
             if self.cell.cell_weight == 1:
                 self.gameover = "Game Over"
 
-        self.autofeed()
+            self.autofeed()
 
         for enemy in self.enemy_list:
             enemy.move()
@@ -180,3 +180,6 @@ class ClickerApp(App):
 
 if __name__ == '__main__':
     ClickerApp().run()
+
+
+

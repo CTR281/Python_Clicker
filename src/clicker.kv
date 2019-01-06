@@ -16,9 +16,13 @@
 
 <AutoClicker>:
     Label:
-        text:"Autofeed Tier" + str(root.tier)
+        text:"Autofeed Tier " + str(root.tier)
         color: 1,1,1,1
         font_size: "20"
+        pos:root.pos
+        center:root.center
+
+
 
 <ClickerGame>:
     cell : clicker_cell
@@ -82,39 +86,60 @@
 
     Label:
         text:"Feed Power:" +str(clicker_cell.growth_factor)
-        font_size:"40"
+        font_size:"30"
         color:0,1,0,1
-        center_x:root.width * 3 / 5
-        center_y:root.height * 1 / 4 + 30
+        center_x:root.width * 5/8
+        center_y:root.height * 1 / 4 + 25
 
     Label:
+        text:"Autoclick: +"+str(tier1.feed_per_second*tier1.amount+tier2.feed_per_second*tier2.amount)
+        font_size:"30"
+        color:0,1,0,1
+        center_x:90
+        center_y:root.height*1/4 + 25
+
+    Label:
+        id: upgrade
         text:"Upgrade"
         font_size:"40"
         color:1,0,0,1
         center: root.width*7/8, root.height-20
 
-    AutoClicker:
-        id: tier1
-        center: root.width*7/8, root.height-20
-
     Button:
         id: buy_tier1
-        background_color: 0,0,0,1
-        text:"+1 : " + str(root.auto_tier1.buy_cost)
+        background_color: 1,0,1,1
+        text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier1)
-        right: root.width
-        top: root.height-100
+        pos: root.width*3/4, root.height*1/2
+        size: root.width*1/4,root.height*1/2-upgrade.font_size
 
     AutoClicker:
-        id: tier2
-
+        id: tier1
+        text:"Autofeed 1"
+        buy_cost: 10
+        feed_per_second:1
+        center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
 
     Button:
         id: buy_tier2
-        background_color: 0,0,0,1
-        text:"+1 : " + str(root.auto_tier2.buy_cost)
+        background_color: 1,1,0,1
+        text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier2)
-        right: root.width
-        top: root.height-200
+        pos:root.width*3/4,0
+        size:root.width*1/4,root.height*1/2
+
+    AutoClicker:
+        id: tier2
+        text:"Autofeed 2"
+        feed_per_second:5
+        buy_cost: 100
+        center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
+
+    Label:
+        text:"Decay:"+str(clicker_cell.fade_factor)
+        font_size:"30"
+        color:0.5,0,1,1
+        center_x:55
+        center_y:root.height*1/4 +55

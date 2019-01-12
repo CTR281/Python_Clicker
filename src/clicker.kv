@@ -3,8 +3,23 @@
         Color:
             rgba: 0,0,1,1
         Ellipse:
-            pos:self.pos
-            size:self.size
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: 0.3,0.1,0.1,1
+        Rectangle:
+            id: plateforme_verticale
+            size: self.size_plateforme
+            pos: self.pos_plateforme
+        Color:
+            rgba: 0.3,0.1,0.1,1
+        Rectangle:
+            id: plateforme_horizontale
+            size: 100, 20
+            pos: self.pos_plateforme[0]-45, self.top-self.size[1]-20
+
+
+
 
 <Enemy>:
     canvas:
@@ -43,13 +58,12 @@
     auto_tier1: tier1
     auto_tier2: tier2
 
-    canvas.before:
+    canvas:
         Color:
             rgba: 1,1,1,1
         Rectangle:
             size: root.size
             pos:root.pos
-    canvas.after:
         Color:
             rgba: 0,0,0,1
         Rectangle:
@@ -62,10 +76,14 @@
             size: root.width*root.limit_x, 10
             pos: 0, root.height*root.limit_y
 
+
+
     ClickerCell:
         id: clicker_cell
-        pos: root.width * 3 / 8, root.height * 9 / 16
-        center: root.width * 3 / 8, root.height * 9 / 16
+        center: root.width * 3 / 8, root.height * 3 / 8 +25 +10
+        size_plateforme: 10,self.top-self.size[1]-root.height*root.limit_y-30
+        pos_plateforme: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
+        game: root
 
     Button:
         id: feed_button
@@ -87,7 +105,7 @@
 
     Label:
         id:health
-        text:str(int(clicker_cell.cell_weight-1))
+        text:str(int(clicker_cell.cell_weight))
         font_size:"40"
         top:root.top-50
         center_x:root.width * 3 / 8
@@ -135,8 +153,8 @@
         text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier1)
-        pos: root.width*6/8, root.height*1/2
-        size: root.width*2/8,root.height*1/2-upgrade.font_size
+        pos: root.width*6/8+10, root.height*1/2
+        size: root.width*2/8-10,root.height*1/2-upgrade.font_size
 
     AutoClicker:
         id: tier1
@@ -152,8 +170,8 @@
         text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier2)
-        pos:root.width*6/8,0
-        size:root.width*2/8,root.height*1/2
+        pos:root.width*6/8+10,0
+        size:root.width*2/8-10,root.height*1/2
 
     AutoClicker:
         id: tier2

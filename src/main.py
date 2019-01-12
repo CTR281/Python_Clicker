@@ -4,11 +4,28 @@ kivy.require('1.10.1')
 
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.uix.button import Button
+from kivy.uix.button import Button, Label
+import kivy.uix.label
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
 from random import randint
+from math import *
+
+
+class Enemy_Label(Label):
+    pos_x= NumericProperty(0)
+    pos_y=NumericProperty(0)
+    pos = ReferenceListProperty(pos_x, pos_y)
+
+    def __init__(self,enemy, **kwargs):
+        super(Label, self).__init__(**kwargs)
+        self.pos_x = enemy.pos[0]
+        self.pos_y = enemy.pos[1]
+        self.pos = self.pos[0], self.pos[1]
+        self.color = [0,0,1,1]
+        self.text = str(enemy.enemy_weight)
+
 
 
 class Enemy(Widget):
@@ -16,25 +33,29 @@ class Enemy(Widget):
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
 
-    def __init__(self,**kwarg):
+    def __init__(self,game, feedpower, **kwarg):
         super(Enemy, self).__init__(**kwarg)
-        self.velocity_x = randint(1,5)
-        self.velocity_y = randint(1,5)
+        self.velocity_x = randint(2, 5)
+        self.velocity_y = randint(2, 5)
         self.velocity = self.velocity_x, self.velocity_y
-        self.pos = (5, randint (210,790))
-        self.enemy_weight = randint(2,10)
+        self.pos = (5, randint(210, 500))
+        self.enemy_weight = randint(2, 10)
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
-
-    def __name__(self):
-        return("Enemy")
+        self.feedpower = feedpower
+        self.game = game
+        self.label = Enemy_Label(self)
+        self.add_widget(self.label)
 
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
+        self.label.pos = Vector(*self.velocity) + self.label.pos
 
-    def collide(self, cell, game):
-        if self.collide_widget(cell):
-            cell.cell_weight -= self.enemy_weight
-            game.children.remove_widget(self)
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+             if self.enemy_weight-self.feedpower > 0:
+                self.enemy_weight -= self.feedpower
+             else:
+                 self.game.remove_widget(self)
 
 
 class AutoClicker(Widget):
@@ -44,9 +65,6 @@ class AutoClicker(Widget):
     cost_increase = NumericProperty(1.2)
     tier = NumericProperty(1)
 
-    def __name__(self):
-        return "Autoclicker"
-
     def autofeed(self):
         return self.feed_per_second * self.amount
 
@@ -55,7 +73,7 @@ class AutoClicker(Widget):
 
     def buy_auto(self):
         self.amount += 1
-        self.buy_cost = int(self.buy_cost*self.cost_increase)
+        self.buy_cost = int(self.buy_cost * self.cost_increase)
 
 
 class ClickerCell(Widget):
@@ -64,9 +82,9 @@ class ClickerCell(Widget):
 
     cell_weight = NumericProperty(101)
     fade_factor = NumericProperty(0)
-    fade_list = [15 * k for k in range(100)]
+    fade_list = [0 * k for k in range(100)]
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         super(ClickerCell, self).__init__(**kwargs)
         self.size = self.cell_weight, self.cell_weight
 
@@ -76,14 +94,13 @@ class ClickerCell(Widget):
         self.center = self.center_x - amount / 2, self.center_y - amount / 2
 
     def collide(self, enemy, game):
-        if self.collide_widget(enemy):
+        if sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < (self.size[0]+enemy.size[0])/2:
             self.add_weight(-enemy.enemy_weight)
             game.remove_widget(enemy)
 
     def grow(self):
         self.add_weight(self.feedpower)
-        
-        
+
     def fade(self, game):
         if self.cell_weight > 0:
             if self.cell_weight - self.fade_factor > 0:
@@ -100,17 +117,17 @@ class ClickerCell(Widget):
         else:
             print("Not Enought Weight")
 
+
 class ClickerGame(Widget):
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
     auto_tier1 = ObjectProperty(tier=StringProperty("1"))
     auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 
-
-
     timer = NumericProperty(0)
+    limit_x, limit_y =  6/8, 1/8
+
     gameover = StringProperty("")
-    enemy_list = []
     count = 0
     phase2 = False
 
@@ -126,20 +143,16 @@ class ClickerGame(Widget):
             print("Not Enought weight")
 
     def spawn_enemy(self):
-        # enemy = Enemy()
-        # enemy.enemy_weight = randint(2, 10)
-        # enemy.pos = 5, randint(210, 400)
-        # enemy.velocity = Vector(5, 0).rotate(randint(-90, 90))
 
-        self.add_widget(Enemy())
-        # self.enemy_list.append()
+        self.add_widget(Enemy(self, self.cell.feedpower))
+
 
     def bounce(self, enemy):
-        # bounce off top and bottom
-        if (enemy.pos[1] < self.height * 1 / 4) or (enemy.pos[1] + enemy.size[0] > self.height):
+
+        if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
             enemy.velocity_y *= -1
 
-        # bounce off left and right
+
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
 
@@ -149,10 +162,10 @@ class ClickerGame(Widget):
         self.count += 1
         if self.count % 30 == 0:
             self.timer += 1
-            if self.timer > 0:
+            if self.timer >= 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
-                self.cell.fade_factor += self.timer/5
+                self.cell.fade_factor += self.timer / 5
             if int(self.timer) % 2 == 0:
                 self.cell.fade(self)
             if self.phase2:
@@ -168,26 +181,27 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
+                print(enemy.label.pos)
 
-                print(self.cell.pos)
-                print(self.cell.size)
-                print(enemy.pos)
-                print(enemy.size)
-                print(self.cell.collide_widget(enemy))
-                print("\n")
+                #print(self.cell.pos)
+                #print(self.cell.size)
+                #print(self.cell.size[0])
+                #print(enemy.pos)
+                #print(enemy.size)
+                #print(enemy.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))
+                #print(enemy.size[0]+self.cell.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < enemy.size[0]+self.cell.size[0])
+                #print("\n")
+
 
 class ClickerApp(App):
     def build(self):
         self.game = ClickerGame()
-        Clock.schedule_interval(self.game.update, 1 / 60)
+        Clock.schedule_interval(self.game.update, 1 / 30)
         return self.game
 
 
 if __name__ == '__main__':
     ClickerApp().run()
-    enemy1 = Enemy()
-    enemy2 = Enemy()
-    print(enemy1.pos)
-    print(enemy2.pos)
-
 

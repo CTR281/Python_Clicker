@@ -32,6 +32,7 @@ class Enemy(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
+    enemy_weight = NumericProperty(0)
 
     def __init__(self,game, feedpower, **kwarg):
         super(Enemy, self).__init__(**kwarg)

@@ -42,21 +42,13 @@ class Enemy(Widget):
         self.pos = (5, randint(210, 500))
         self.enemy_weight = randint(2, 10)
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
-        self.feedpower = feedpower
-        self.game = game
-        self.label = Enemy_Label(self)
-        self.add_widget(self.label)
 
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
-        self.label.pos = Vector(*self.velocity) + self.label.pos
 
-    def on_touch_down(self, touch):
+    def on_touch(self, touch, feedpower):
         if self.collide_point(*touch.pos):
-             if self.enemy_weight-self.feedpower > 0:
-                self.enemy_weight -= self.feedpower
-             else:
-                 self.game.remove_widget(self)
+            self.enemy_weight -= feedpower
 
 
 class AutoClicker(Widget):
@@ -147,7 +139,6 @@ class ClickerGame(Widget):
 
         self.add_widget(Enemy(self, self.cell.feedpower))
 
-
     def bounce(self, enemy):
 
         if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
@@ -182,18 +173,17 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
-                print(enemy.label.pos)
 
-                #print(self.cell.pos)
-                #print(self.cell.size)
-                #print(self.cell.size[0])
-                #print(enemy.pos)
-                #print(enemy.size)
-                #print(enemy.size[0])
-                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))
-                #print(enemy.size[0]+self.cell.size[0])
-                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < enemy.size[0]+self.cell.size[0])
-                #print("\n")
+    def on_touch_down(self, touch):
+         for child in self.children:
+             if child.__class__.__name__ == "Enemy":
+                 child.on_touch(touch, self.cell.feedpower)
+                 if child.enemy_weight <= 0:
+                     self.remove_widget(child)
+                 return True
+             else:
+                 child.on_touch_down(touch)
+
 
 
 class ClickerApp(App):

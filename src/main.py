@@ -13,28 +13,16 @@ from random import randint
 from math import *
 
 
-class Enemy_Label(Label):
-    pos_x= NumericProperty(0)
-    pos_y=NumericProperty(0)
-    pos = ReferenceListProperty(pos_x, pos_y)
-
-    def __init__(self,enemy, **kwargs):
-        super(Label, self).__init__(**kwargs)
-        self.pos_x = enemy.pos[0]
-        self.pos_y = enemy.pos[1]
-        self.pos = self.pos[0], self.pos[1]
-        self.color = [0,0,1,1]
-        self.text = str(enemy.enemy_weight)
-
-
-
 class Enemy(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
     enemy_weight = NumericProperty(0)
+    pv= NumericProperty(0)
+    jauge=ObjectProperty(None)
 
-    def __init__(self,game, feedpower, **kwarg):
+
+    def __init__(self, **kwarg):
         super(Enemy, self).__init__(**kwarg)
         self.velocity_x = randint(2, 5)
         self.velocity_y = randint(2, 5)
@@ -42,13 +30,17 @@ class Enemy(Widget):
         self.pos = (5, randint(210, 500))
         self.enemy_weight = randint(2, 10)
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
+        self.pv = self.size[0]
+        self.max = self.enemy_weight
 
     def move(self):
         self.pos = Vector(*self.velocity) + self.pos
 
     def on_touch(self, touch, feedpower):
         if self.collide_point(*touch.pos):
-            self.enemy_weight -= feedpower
+                self.enemy_weight -= feedpower
+                self.pv = (self.enemy_weight/self.max)*self.size[0]
+
 
 
 class AutoClicker(Widget):
@@ -137,7 +129,8 @@ class ClickerGame(Widget):
 
     def spawn_enemy(self):
 
-        self.add_widget(Enemy(self, self.cell.feedpower))
+        self.add_widget(Enemy())
+
 
     def bounce(self, enemy):
 
@@ -147,6 +140,15 @@ class ClickerGame(Widget):
 
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
+
+    def on_touch_down(self, touch):
+        for child in self.children:
+            if child.__class__.__name__ == "Enemy":
+                child.on_touch(touch, self.cell.feedpower)
+                if child.enemy_weight <= 0:
+                    self.remove_widget(child)
+            else:
+                child.on_touch_down(touch)
 
     def update(self, dt):
         if self.gameover == "Game Over":
@@ -173,17 +175,18 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
+                print(enemy.children[0].pos)
 
-    def on_touch_down(self, touch):
-         for child in self.children:
-             if child.__class__.__name__ == "Enemy":
-                 child.on_touch(touch, self.cell.feedpower)
-                 if child.enemy_weight <= 0:
-                     self.remove_widget(child)
-                 return True
-             else:
-                 child.on_touch_down(touch)
-
+                #print(self.cell.pos)
+                #print(self.cell.size)
+                #print(self.cell.size[0])
+                print(enemy.pos)
+                #print(enemy.size)
+                #print(enemy.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))
+                #print(enemy.size[0]+self.cell.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < enemy.size[0]+self.cell.size[0])
+                #print("\n")
 
 
 class ClickerApp(App):

@@ -13,15 +13,18 @@
         Ellipse:
             pos:self.pos
             size:self.size
-        Color:
-            rgba: 1,1,1,1
         Rectangle:
-            pos:self.pos
-            size:self.size[0]/2, self.size[1]/2
+            pos:root.pos[0]+root.size[0]+8, root.pos[1]
+            size:5, root.size[1]
+        Color:
+            rgba: 0,1,0,1
+        Rectangle:
+            pos:root.pos[0]+root.size[0]+8, root.pos[1]
+            size:5, root.pv
     Label:
         text: str(root.enemy_weight)
-        pos: root.pos
         color: 0, 0, 0, 1
+        pos: root.pos[0]+root.size[0]+8, root.pos[1] + root.size[1]
 
 <AutoClicker>:
     Label:
@@ -137,7 +140,7 @@
 
     AutoClicker:
         id: tier1
-        text:"Autofeed Tier 1"
+        text:"Autofeed Tier " + str(root.auto_tier1.tier)
         buy_cost: 20
         feed_per_second:1
         center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
@@ -154,14 +157,15 @@
 
     AutoClicker:
         id: tier2
-        text:"Autofeed Tier 2"
+        text:"Autofeed Tier " + str(root.auto_tier2.tier)
         feed_per_second:5
         buy_cost: 200
         center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
 
     Label:
-        text:"Decay: -"+str(int(clicker_cell.fade_factor))
+        text:"Decay:-"+str(int(clicker_cell.fade_factor))
         font_size:"30"
         color:0.5,0,1,1
         center_x:55
         center_y:root.height*1/4 +55
+

@@ -22,9 +22,9 @@
             pos:root.pos[0]+root.size[0]+8, root.pos[1]
             size:5, root.pv
     Label:
-        text: str(root.enemy_weight)
+        text: "%d/%d" % (root.enemy_weight,root.max)
         color: 0, 0, 0, 1
-        pos: root.pos[0]+root.size[0]+8, root.pos[1] + root.size[1]
+        center: root.pos[0]+root.size[0]+10, root.pos[1] + root.size[1] + 10
 
 <AutoClicker>:
     Label:

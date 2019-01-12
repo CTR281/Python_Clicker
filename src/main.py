@@ -19,8 +19,7 @@ class Enemy(Widget):
     velocity = ReferenceListProperty(velocity_x, velocity_y)
     enemy_weight = NumericProperty(0)
     pv= NumericProperty(0)
-    jauge=ObjectProperty(None)
-
+    max=NumericProperty(0)
 
     def __init__(self, **kwarg):
         super(Enemy, self).__init__(**kwarg)

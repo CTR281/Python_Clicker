@@ -6,11 +6,12 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button, Label
 import kivy.uix.label
+from kivy.uix.image import Image
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty, BoundedNumericProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.animation import *
-from random import randint, choice
+from random import randint
 from math import *
 
 
@@ -22,41 +23,14 @@ class Enemy(Widget):
     enemy_weight = NumericProperty(0)
     pv= NumericProperty(0)
     max=NumericProperty(0)
-    color_1 = NumericProperty(0)
-    color_2 = NumericProperty(0)
-    color_3 = NumericProperty(0)
-    color_4 = NumericProperty(0)
-    color = ReferenceListProperty(color_1,color_2,color_3,color_4)
 
-    def __init__(self,type, **kwarg):
+    def __init__(self, **kwarg):
         super(Enemy, self).__init__(**kwarg)
-        self.type = type
-        self.side = choice([-1,1])
-
-        if self.type == 'red':
-            while -2<self.velocity_x<2 or -2<self.velocity_y<2:
-                self.velocity_x = randint(2, 4)*self.side
-                self.velocity_y = randint(-4, 4)
-            self.velocity = self.velocity_x, self.velocity_y
-            self.enemy_weight = randint(4, 8)
-            self.color = 1, 0, 0, 1
-
-        if self.type == 'purple':
-            while self.velocity_x == 0 or self.velocity_y == 0:
-                self.velocity_x = 1*self.side
-                self.velocity_y = randint(-1,1)
-            self.velocity = self.velocity_x, self.velocity_y
-            self.enemy_weight = randint(15,22)
-            self.color= 1,1,0,1
-
-        if self.type == 'blue':
-            while self.velocity_y == 0:
-                self.velocity_y = 8*randint(-1,1)
-            self.velocity_x = 6*self.side
-            self.enemy_weight = randint(1,3)
-            self.color = 0, 0.2, 1, 1
-
-        self.pos = (5 if self.side == 1 else 450, randint(210, 450))
+        self.velocity_x = randint(2, 5)
+        self.velocity_y = randint(2, 5)
+        self.velocity = self.velocity_x, self.velocity_y
+        self.pos = (5, randint(210, 500))
+        self.enemy_weight = randint(2, 10)
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
         self.pv = self.size[0]
         self.max = self.enemy_weight
@@ -103,7 +77,7 @@ class ClickerCell(Widget):
 
     jauge_pv = NumericProperty(0)
 
-    gold = NumericProperty(0)
+    score = NumericProperty(0)
 
     game = ObjectProperty(None)
 
@@ -112,7 +86,7 @@ class ClickerCell(Widget):
         self.size = self.cell_size, self.cell_size
 
     def add_score(self, amount):
-        self.gold += amount
+        self.score += amount
 
     def hit_treasure(self, amount):
         self.center_y = 25 + 10 + self.game.height * 5/8
@@ -136,7 +110,7 @@ class ClickerCell(Widget):
             self.hit_treasure(amount)
 
     def collide(self, enemy, game):
-        if Vector(self.center).distance(enemy.center) < (self.size[0]+enemy.size[0])/2:
+        if self.collide_widget(enemy):
             self.add_weight(-enemy.max)
             game.remove_widget(enemy)
 
@@ -162,18 +136,30 @@ class Tresor(Widget):
     pass
 
 class ClickerGame(Widget):
-    cell = ObjectProperty(None)
-    feed = ObjectProperty(None)
-    tresor = ObjectProperty(None)
+    cell = ObjectProperty()
+    feed = ObjectProperty()
+    tresor = ObjectProperty()
     auto_tier1 = ObjectProperty(tier=StringProperty("1"))
     auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 
     timer = NumericProperty(0)
     limit_x, limit_y =  6/8, 1/8
 
+    spikes = ObjectProperty()
+    dirt = ObjectProperty()
+
     gameover = StringProperty("")
     count = 0
     phase2 = False
+
+    def __init__(self, **kwargs):
+        super(ClickerGame, self).__init__(**kwargs)
+        self.spikes = Image(source="../Graphics/Spike.png").texture
+        self.spikes.wrap = 'repeat'
+        self.spikes.uvsize = 10,-1
+        self.dirt = Image(source="../Graphics/Background.png").texture
+        self.dirt.wrap = 'repeat'
+        self.dirt.uvsize = 20,20
 
     def autofeed(self):
         self.cell.add_weight(self.auto_tier1.autofeed())
@@ -187,15 +173,11 @@ class ClickerGame(Widget):
             print("Not Enought weight")
 
     def spawn_enemy(self):
-        type = ['red','blue','purple']
-        self.add_widget(Enemy(choice(type)))
-
+        self.add_widget(Enemy())
 
     def bounce(self, enemy):
-
         if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
             enemy.velocity_y *= -1
-
 
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
@@ -210,16 +192,15 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def update(self, dt):
-
         if self.cell.cell_weight == 0:
             self.gameover = "Game Over"
 
         if self.gameover == "Game Over":
             return
+
         self.count += 1
         if self.count % 3 == 0:
             self.cell.fade()
-
         if self.count % 30 == 0:
             self.timer += 1
             if self.timer >= 0:
@@ -238,19 +219,6 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
-
-                #print(enemy.children[0].pos)
-
-
-                #print(self.cell.size)
-                #print(self.cell.size[0])
-                #print(enemy.pos)
-                #print(enemy.size)
-                #print(enemy.size[0])
-                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))
-                #print(enemy.size[0]+self.cell.size[0])
-                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < enemy.size[0]+self.cell.size[0])
-                #print("\n")
 
 
 class ClickerApp(App):

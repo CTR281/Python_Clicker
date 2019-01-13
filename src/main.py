@@ -6,7 +6,6 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button, Label
 import kivy.uix.label
-from kivy.uix.image import Image
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty, BoundedNumericProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
@@ -77,7 +76,7 @@ class ClickerCell(Widget):
 
     jauge_pv = NumericProperty(0)
 
-    score = NumericProperty(0)
+    gold = NumericProperty(0)
 
     game = ObjectProperty(None)
 
@@ -86,7 +85,7 @@ class ClickerCell(Widget):
         self.size = self.cell_size, self.cell_size
 
     def add_score(self, amount):
-        self.score += amount
+        self.gold += amount
 
     def hit_treasure(self, amount):
         self.center_y = 25 + 10 + self.game.height * 5/8
@@ -110,7 +109,7 @@ class ClickerCell(Widget):
             self.hit_treasure(amount)
 
     def collide(self, enemy, game):
-        if sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < (self.size[0]+enemy.size[0])/2:
+        if Vector(self.center).distance(enemy.center) < (self.size[0]+enemy.size[0])/2:
             self.add_weight(-enemy.max)
             game.remove_widget(enemy)
 
@@ -145,21 +144,9 @@ class ClickerGame(Widget):
     timer = NumericProperty(0)
     limit_x, limit_y =  6/8, 1/8
 
-    spikes = ObjectProperty()
-    dirt = ObjectProperty()
-
     gameover = StringProperty("")
     count = 0
     phase2 = False
-
-    def __init__(self, **kwargs):
-        super(ClickerGame, self).__init__(**kwargs)
-        self.spikes = Image(source="../Graphics/spike.png").texture
-        self.spikes.wrap = 'repeat'
-        self.spikes.uvsize = 7.5,-1
-        self.dirt = Image(source="../Graphics/Background.png").texture
-        self.dirt.wrap = 'repeat'
-        self.dirt.uvsize = 10,10
 
     def autofeed(self):
         self.cell.add_weight(self.auto_tier1.autofeed())
@@ -173,12 +160,15 @@ class ClickerGame(Widget):
             print("Not Enought weight")
 
     def spawn_enemy(self):
+
         self.add_widget(Enemy())
 
 
     def bounce(self, enemy):
+
         if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
             enemy.velocity_y *= -1
+
 
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
@@ -193,15 +183,16 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def update(self, dt):
+
         if self.cell.cell_weight == 0:
             self.gameover = "Game Over"
 
         if self.gameover == "Game Over":
             return
-
         self.count += 1
         if self.count % 3 == 0:
             self.cell.fade()
+
         if self.count % 30 == 0:
             self.timer += 1
             if self.timer >= 0:
@@ -220,6 +211,19 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
+
+                #print(enemy.children[0].pos)
+
+
+                #print(self.cell.size)
+                #print(self.cell.size[0])
+                #print(enemy.pos)
+                #print(enemy.size)
+                #print(enemy.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))
+                #print(enemy.size[0]+self.cell.size[0])
+                #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < enemy.size[0]+self.cell.size[0])
+                #print("\n")
 
 
 class ClickerApp(App):

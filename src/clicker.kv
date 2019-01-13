@@ -5,7 +5,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-            source: '../Graphics/Aventurer.png'
+            source: 'Graphics/Aventurer.png'
 
 
 <Tresor>:
@@ -15,7 +15,7 @@
         Rectangle:
             pos:self.pos
             size: 100,70
-            source: '../Graphics/treasure.png'
+            source: 'Graphics/treasure.png'
 
 
 
@@ -23,10 +23,12 @@
 <Enemy>:
     canvas:
         Color:
-            rgba: 1, 0, 0, 1
+            rgba: self.color
         Ellipse:
             pos:self.pos
             size:self.size
+        Color:
+            rgba: 1, 0, 0, 1
         Rectangle:
             pos:root.pos[0]+root.size[0]+8, root.pos[1]
             size:5, root.size[1]
@@ -36,9 +38,9 @@
             pos:root.pos[0]+root.size[0]+8, root.pos[1]
             size:5, root.pv
     Label:
-        text: str(root.enemy_weight)
+        text: "%d/%d" % (root.enemy_weight,root.max)
         color: 0, 0, 0, 1
-        center: root.pos[0]+root.size[0]+10, root.pos[1]+root.size[1]+10
+        center: root.pos[0]+root.size[0]+10, root.pos[1] + root.size[1] + 10
 
 <AutoClicker>:
     Label:
@@ -66,42 +68,28 @@
             size: root.size
             pos:root.pos
         Color:
-            rgb: 1, 1, 1, 1
+            rgb: 1, 1, 1
         Rectangle:
             id: background
             size:root.size[0]* 3/4, root.size[1] * 7/8
             pos:0, root.size[1] * 1/8
-            texture: root.dirt
+            source: 'Graphics/Background.png'
         Rectangle:
             id: spikes
-            size: root.width * 3/4, root.height * 1/10
+            size: root.width * 3/4, root.height * 1/8 # root.height*1/8
             pos: root.pos[0], root.pos[1] + root.height*1/8 + 10
-            texture: root.spikes
-        Rectangle:
-            size: 36 * 1.5, 46 * 1.5
-            pos: 25, root.height - 150
-            source: "../Graphics/Rope_set.png"
-        Rectangle:
-            size: 36 * 1.5, 46 * 1.5
-            pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
-            source: "../Graphics/Rope_set.png"
-        Rectangle:
-            pos: 23, 100
-            size: 36*1.5, root.height - 150 - root.height * 1/8
-            source:"../Graphics/Rope.png"
-
+            source: 'Graphics/spike.png'
         Color:
             rgba: 0,0,0,1
         Rectangle:
             id: vertical
             size: 10, root.height
             pos: root.width*root.limit_x, 0
+
         Rectangle:
             id: horizontal
             size: root.width*root.limit_x, 10
             pos: 0, root.height*root.limit_y
-
-
 
     Tresor:
         id: tresor
@@ -115,6 +103,7 @@
         game: root
 
         canvas:
+
             Color:
                 rgba: 0.3,0.1,0.1,1
             Rectangle:
@@ -122,12 +111,11 @@
                 size: 10,self.top-self.size[1]-root.height*root.limit_y-30
                 pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
             Color:
-                rgba: 1, 1, 1, 1#0.3,0.1,0.1,1
+                rgba: 0.3,0.1,0.1,1
             Rectangle:
                 id: plateforme_horizontale
-                size: root.width * root.limit_x - 20, 20
-                pos: 10, self.top - self.size[1] -20#root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
-                source: "../Graphics/Bridge.png"
+                size: 100, 20
+                pos: root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
             Color:
                 rgba: 1,0,0,1
             Rectangle:
@@ -143,7 +131,7 @@
 
 
         Label:
-            text:"Score:%d" % clicker_cell.score
+            text:"Gold:%d" % clicker_cell.gold
             font_size:"40"
             size: 200, 40
             text_size: self.size

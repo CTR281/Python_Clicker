@@ -43,6 +43,7 @@ class Enemy(Widget):
 
 
 class AutoClicker(Widget):
+
     feed_per_second = NumericProperty(0)
     amount = NumericProperty(0)
     buy_cost = NumericProperty(0)
@@ -61,19 +62,24 @@ class AutoClicker(Widget):
 
 
 class ClickerCell(Widget):
+
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
 
     cell_weight = BoundedNumericProperty(100, min=0, max= 200, errorhandler= lambda x: 200 if x >200 else 0)
     cell_size = BoundedNumericProperty(101, min=50, max= 150, errorhandler=lambda x: 150 if x > 150 else 50)
 
-    fade_factor = NumericProperty(9)
+    fade_factor = NumericProperty(0.1)
     fade_list = [0 * k for k in range(100)]
+
     size_plateforme_x,size_plateforme_y=NumericProperty(0),NumericProperty(0)
     size_plateforme =ReferenceListProperty(size_plateforme_x,size_plateforme_y)
     pos_plateforme_x, pos_plateforme_y = NumericProperty(0), NumericProperty(0)
     pos_plateforme = ReferenceListProperty(pos_plateforme_x, pos_plateforme_y)
 
+    jauge_pv = NumericProperty(0)
+    pos_rectangle_x, pos_rectangle_y= NumericProperty(0), NumericProperty(0)
+    pos_rectangle = ReferenceListProperty(pos_rectangle_x, pos_rectangle_y)
 
     def __init__(self, **kwargs):
         super(ClickerCell, self).__init__(**kwargs)
@@ -95,13 +101,12 @@ class ClickerCell(Widget):
     def grow(self):
         self.add_weight(self.feedpower)
 
-    def fade(self, game):
+    def fade(self):
         if self.cell_weight > 0:
             if self.cell_weight - self.fade_factor > 0:
                 self.add_weight(-self.fade_factor)
             else:
                 self.cell_weight = 1
-                #self.pos = game.width * 3 / 8, game.height * 5 / 8
 
     def upgrade_feedpower(self):
         if self.cell_weight >= self.feedpower_upgrade_cost:
@@ -109,7 +114,7 @@ class ClickerCell(Widget):
             self.feedpower += 1
             self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 1.15)
         else:
-            print("Not Enought Weight")
+            print("Not Enough Weight")
 
 
 class ClickerGame(Widget):
@@ -160,9 +165,16 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def update(self, dt):
+
+        if self.cell.cell_weight == 0:
+            self.gameover = "Game Over"
+
         if self.gameover == "Game Over":
             return
         self.count += 1
+        if self.count % 3 == 0:
+            self.cell.fade()
+
         if self.count % 30 == 0:
             self.timer += 1
             if self.timer >= 0:
@@ -170,13 +182,10 @@ class ClickerGame(Widget):
             if self.timer in self.cell.fade_list:
                 self.cell.fade_factor += self.timer / 5
             if int(self.timer) % 1 == 0:
-                self.cell.fade(self)
+                self.cell.fade()
             if self.phase2:
                 if int(self.timer) % 5 == 0:
                     self.spawn_enemy()
-            if self.cell.cell_weight ==0:
-                self.gameover = "Game Over"
-
             self.autofeed()
 
         for enemy in self.children:

@@ -23,10 +23,12 @@
 <Enemy>:
     canvas:
         Color:
-            rgba: 1, 0, 0, 1
+            rgba: self.color
         Ellipse:
             pos:self.pos
             size:self.size
+        Color:
+            rgba: 1, 0, 0, 1
         Rectangle:
             pos:root.pos[0]+root.size[0]+8, root.pos[1]
             size:5, root.size[1]

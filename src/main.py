@@ -10,7 +10,7 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.animation import *
-from random import randint
+from random import randint, choice
 from math import *
 
 
@@ -22,14 +22,41 @@ class Enemy(Widget):
     enemy_weight = NumericProperty(0)
     pv= NumericProperty(0)
     max=NumericProperty(0)
+    color_1 = NumericProperty(0)
+    color_2 = NumericProperty(0)
+    color_3 = NumericProperty(0)
+    color_4 = NumericProperty(0)
+    color = ReferenceListProperty(color_1,color_2,color_3,color_4)
 
-    def __init__(self, **kwarg):
+    def __init__(self,type, **kwarg):
         super(Enemy, self).__init__(**kwarg)
-        self.velocity_x = randint(2, 5)
-        self.velocity_y = randint(2, 5)
-        self.velocity = self.velocity_x, self.velocity_y
-        self.pos = (5, randint(210, 500))
-        self.enemy_weight = randint(2, 10)
+        self.type = type
+        self.side = choice([-1,1])
+
+        if self.type == 'red':
+            while -2<self.velocity_x<2 or -2<self.velocity_y<2:
+                self.velocity_x = randint(2, 4)*self.side
+                self.velocity_y = randint(-4, 4)
+            self.velocity = self.velocity_x, self.velocity_y
+            self.enemy_weight = randint(4, 8)
+            self.color = 1, 0, 0, 1
+
+        if self.type == 'purple':
+            while self.velocity_x == 0 or self.velocity_y == 0:
+                self.velocity_x = 1*self.side
+                self.velocity_y = randint(-1,1)
+            self.velocity = self.velocity_x, self.velocity_y
+            self.enemy_weight = randint(15,22)
+            self.color= 1,1,0,1
+
+        if self.type == 'blue':
+            while self.velocity_y == 0:
+                self.velocity_y = 8*randint(-1,1)
+            self.velocity_x = 6*self.side
+            self.enemy_weight = randint(1,3)
+            self.color = 0, 0.2, 1, 1
+
+        self.pos = (5 if self.side == 1 else 450, randint(210, 450))
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
         self.pv = self.size[0]
         self.max = self.enemy_weight
@@ -160,8 +187,8 @@ class ClickerGame(Widget):
             print("Not Enought weight")
 
     def spawn_enemy(self):
-
-        self.add_widget(Enemy())
+        type = ['red','blue','purple']
+        self.add_widget(Enemy(choice(type)))
 
 
     def bounce(self, enemy):

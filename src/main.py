@@ -87,20 +87,26 @@ class ClickerCell(Widget):
     def add_score(self, amount):
         self.score += amount
 
+    def hit_treasure(self, amount):
+        self.center_y = 25 + 10 + self.game.height * 5/8
+        self.game.health.color = [1, 0.8, 0, 1]
+        self.add_score(amount)
+        self.game.tresor.pos[0] = self.game.width * 3 / 8 - 50
+        anim = Animation(x=self.game.tresor.pos[0] + 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
+            x=self.game.tresor.pos[0] - 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
+            x=self.game.tresor.pos[0], y=self.game.tresor.pos[1], duration=0.2)
+        anim.start(self.game.tresor)
+
 
     def add_weight(self, amount):
         self.cell_weight += amount
         self.cell_size += amount
         self.size = self.cell_size, self.cell_size
-        if self.cell_weight <= 200:
+        if self.cell_weight < 200:
             self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/200)*self.game.height*4/8
             self.game.health.color = [0,0,0,1]
         if self.cell_weight == 200:
-            self.game.health.color =  [1,0.8,0,1]
-            self.add_score(amount)
-            self.game.tresor.pos[0]= self.game.width*3/8-50
-            anim=Animation(x=self.game.tresor.pos[0]+8, y=self.game.tresor.pos[1], duration =0.2) + Animation(x=self.game.tresor.pos[0]-8, y=self.game.tresor.pos[1], duration =0.2)+Animation(x=self.game.tresor.pos[0], y=self.game.tresor.pos[1], duration =0.2)
-            anim.start(self.game.tresor)
+            self.hit_treasure(amount)
 
     def collide(self, enemy, game):
         if sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < (self.size[0]+enemy.size[0])/2:

@@ -6,14 +6,16 @@ from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button, Label
 import kivy.uix.label
-from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty
+from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty, BoundedNumericProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
+from kivy.animation import *
 from random import randint
 from math import *
 
 
 class Enemy(Widget):
+
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
@@ -43,6 +45,7 @@ class Enemy(Widget):
 
 
 class AutoClicker(Widget):
+
     feed_per_second = NumericProperty(0)
     amount = NumericProperty(0)
     buy_cost = NumericProperty(0)
@@ -61,37 +64,64 @@ class AutoClicker(Widget):
 
 
 class ClickerCell(Widget):
+
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
 
-    cell_weight = NumericProperty(101)
-    fade_factor = NumericProperty(0)
+    cell_weight = BoundedNumericProperty(100, min=0, max= 200, errorhandler= lambda x: 200 if x >200 else 0)
+    cell_size = BoundedNumericProperty(101, min=50, max= 150, errorhandler=lambda x: 150 if x > 150 else 50)
+
+    fade_factor = NumericProperty(0.1)
     fade_list = [0 * k for k in range(100)]
+
+    jauge_pv = NumericProperty(0)
+
+    score = NumericProperty(0)
+
+    game = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(ClickerCell, self).__init__(**kwargs)
-        self.size = self.cell_weight, self.cell_weight
+        self.size = self.cell_size, self.cell_size
+
+    def add_score(self, amount):
+        self.score += amount
+
+    def hit_treasure(self, amount):
+        self.center_y = 25 + 10 + self.game.height * 5/8
+        self.game.health.color = [1, 0.8, 0, 1]
+        self.add_score(amount)
+        self.game.tresor.pos[0] = self.game.width * 3 / 8 - 50
+        anim = Animation(x=self.game.tresor.pos[0] + 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
+            x=self.game.tresor.pos[0] - 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
+            x=self.game.tresor.pos[0], y=self.game.tresor.pos[1], duration=0.2)
+        anim.start(self.game.tresor)
+
 
     def add_weight(self, amount):
         self.cell_weight += amount
-        self.size = self.cell_weight, self.cell_weight
-        self.center = self.center_x - amount / 2, self.center_y - amount / 2
+        self.cell_size += amount
+        self.size = self.cell_size, self.cell_size
+        if self.cell_weight < 200:
+            self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/200)*self.game.height*4/8
+            self.game.health.color = [0,0,0,1]
+        if self.cell_weight == 200:
+            self.hit_treasure(amount)
 
     def collide(self, enemy, game):
         if sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < (self.size[0]+enemy.size[0])/2:
-            self.add_weight(-enemy.enemy_weight)
+            self.add_weight(-enemy.max)
             game.remove_widget(enemy)
 
     def grow(self):
         self.add_weight(self.feedpower)
 
-    def fade(self, game):
+    def fade(self):
         if self.cell_weight > 0:
             if self.cell_weight - self.fade_factor > 0:
                 self.add_weight(-self.fade_factor)
             else:
                 self.cell_weight = 1
-                self.pos = game.width * 3 / 8, game.height * 5 / 8
 
     def upgrade_feedpower(self):
         if self.cell_weight >= self.feedpower_upgrade_cost:
@@ -99,12 +129,15 @@ class ClickerCell(Widget):
             self.feedpower += 1
             self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 1.15)
         else:
-            print("Not Enought Weight")
+            print("Not Enough Weight")
 
+class Tresor(Widget):
+    pass
 
 class ClickerGame(Widget):
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
+    tresor = ObjectProperty(None)
     auto_tier1 = ObjectProperty(tier=StringProperty("1"))
     auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 
@@ -150,23 +183,27 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def update(self, dt):
+
+        if self.cell.cell_weight == 0:
+            self.gameover = "Game Over"
+
         if self.gameover == "Game Over":
             return
         self.count += 1
+        if self.count % 3 == 0:
+            self.cell.fade()
+
         if self.count % 30 == 0:
             self.timer += 1
             if self.timer >= 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
                 self.cell.fade_factor += self.timer / 5
-            if int(self.timer) % 2 == 0:
-                self.cell.fade(self)
+            if int(self.timer) % 1 == 0:
+                self.cell.fade()
             if self.phase2:
                 if int(self.timer) % 5 == 0:
                     self.spawn_enemy()
-            if self.cell.cell_weight == 1:
-                self.gameover = "Game Over"
-
             self.autofeed()
 
         for enemy in self.children:
@@ -174,12 +211,13 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
-                print(enemy.children[0].pos)
 
-                #print(self.cell.pos)
+                #print(enemy.children[0].pos)
+
+
                 #print(self.cell.size)
                 #print(self.cell.size[0])
-                print(enemy.pos)
+                #print(enemy.pos)
                 #print(enemy.size)
                 #print(enemy.size[0])
                 #print(sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2))

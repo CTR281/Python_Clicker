@@ -1,10 +1,24 @@
 <ClickerCell>:
     canvas:
         Color:
-            rgba: 0,0,1,1
+            rgba: 1,1,1,1
         Ellipse:
+            pos: self.pos
+            size: self.size
+            source: 'Graphics/Aventurer.png'
+
+
+<Tresor>:
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        Rectangle:
             pos:self.pos
-            size:self.size
+            size: 100,70
+            source: 'Graphics/treasure.png'
+
+
+
 
 <Enemy>:
     canvas:
@@ -39,17 +53,18 @@
 <ClickerGame>:
     cell : clicker_cell
     health : health
+    tresor: tresor
     feed: feed_button
     auto_tier1: tier1
     auto_tier2: tier2
 
-    canvas.before:
+
+    canvas:
         Color:
             rgba: 1,1,1,1
         Rectangle:
             size: root.size
             pos:root.pos
-    canvas.after:
         Color:
             rgba: 0,0,0,1
         Rectangle:
@@ -62,10 +77,53 @@
             size: root.width*root.limit_x, 10
             pos: 0, root.height*root.limit_y
 
+    Tresor:
+        id: tresor
+        pos:root.width*3/8-50,root.height*5/8+25+10+75
+
+
     ClickerCell:
         id: clicker_cell
-        pos: root.width * 3 / 8, root.height * 9 / 16
-        center: root.width * 3 / 8, root.height * 9 / 16
+        center: root.width * 3 / 8, root.height * 3 / 8 +25 +10
+        jauge_pv: root.width*root.limit_x*4/5+20
+        game: root
+
+        canvas:
+
+            Color:
+                rgba: 0.3,0.1,0.1,1
+            Rectangle:
+                id: plateforme_verticale
+                size: 10,self.top-self.size[1]-root.height*root.limit_y-30
+                pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
+            Color:
+                rgba: 0.3,0.1,0.1,1
+            Rectangle:
+                id: plateforme_horizontale
+                size: 100, 20
+                pos: root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
+            Color:
+                rgba: 1,0,0,1
+            Rectangle:
+                id:jauge
+                pos:50, root.height-30
+                size: root.width*root.limit_x*4/5+20, 20
+            Color:
+                rgba: 0,1,0,1
+            Rectangle:
+                id:jauge verte
+                pos:50, root.height-30
+                size:self.jauge_pv*(self.cell_weight/200), 20
+
+
+        Label:
+            text:"Score:%d" % clicker_cell.score
+            font_size:"40"
+            size: 200, 40
+            text_size: self.size
+            center_x:0+self.size[0]/2
+            color: 1,0.9,0,1
+            top: root.height - 40
 
     Button:
         id: feed_button
@@ -87,14 +145,14 @@
 
     Label:
         id:health
-        text:str(int(clicker_cell.cell_weight-1))
-        font_size:"40"
-        top:root.top-50
-        center_x:root.width * 3 / 8
-        color: 0, 0, 1, 1
+        text:"%d/%d" % (clicker_cell.cell_weight, 200)
+        font_size:"20"
+        center_y:root.height-30-10
+        center_x:root.width*root.limit_x*4/5+40
+        color: 0, 0, 0, 1
 
     Label:
-        text:str(int(root.timer))
+        text:"%d" % int(root.timer)
         font_size:"40"
         top: root.height+30
         center_x:20
@@ -104,22 +162,22 @@
         text:str(root.gameover)
         font_size:"70"
         color:0,0,0,1
-        center: root.width * 5 / 8, root.height * 7 / 8
+        center: root.width * 3 / 8, root.height * 5 / 8
 
 
-    Label:
-        text:"Feed Power:" +str(clicker_cell.feedpower)
-        font_size:"30"
-        color:0,1,0,1
-        center_x:root.width * 7/8
-        center_y:root.height * 1 / 8 + 25
+   # Label:
+   #     text:"Feed Power:" +str(clicker_cell.feedpower)
+   #     font_size:"30"
+   #     color:0,1,0,1
+   #     center_x:root.width * 7/8
+   #     center_y:root.height * 1 / 8 + 25
 
-    Label:
-        text:"Autoclick: +"+str(tier1.feed_per_second*tier1.amount+tier2.feed_per_second*tier2.amount)
-        font_size:"30"
-        color:0,1,0,1
-        center_x:90
-        center_y:root.height*1/4 + 25
+   # Label:
+   #     text:"Autoclick: +"+str(tier1.feed_per_second*tier1.amount+tier2.feed_per_second*tier2.amount)
+   #     font_size:"30"
+   #     color:0,1,0,1
+   #     center_x:90
+   #     center_y:root.height*1/4 + 25
 
     Label:
         id: upgrade
@@ -135,8 +193,8 @@
         text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier1)
-        pos: root.width*6/8, root.height*1/2
-        size: root.width*2/8,root.height*1/2-upgrade.font_size
+        pos: root.width*6/8+10, root.height*1/2
+        size: root.width*2/8-10,root.height*1/2-upgrade.font_size
 
     AutoClicker:
         id: tier1
@@ -152,8 +210,8 @@
         text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier2)
-        pos:root.width*6/8,0
-        size:root.width*2/8,root.height*1/2
+        pos:root.width*6/8+10,0
+        size:root.width*2/8-10,root.height*1/2
 
     AutoClicker:
         id: tier2
@@ -162,10 +220,10 @@
         buy_cost: 200
         center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
 
-    Label:
-        text:"Decay:-"+str(int(clicker_cell.fade_factor))
-        font_size:"30"
-        color:0.5,0,1,1
-        center_x:55
-        center_y:root.height*1/4 +55
+   # Label:
+   #     text:"Decay:-"+str(int(clicker_cell.fade_factor))
+   #     font_size:"30"
+   #     color:0.5,0,1,1
+   #     center_x:55
+   #     center_y:root.height*1/4 +55
 

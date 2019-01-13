@@ -127,7 +127,7 @@
             Rectangle:
                 id:jauge verte
                 pos:50, root.height-30
-                size:self.jauge_pv*(self.cell_weight/200), 20
+                size:self.jauge_pv*(self.cell_weight/100), 20
             Color:
                 rgba: 1,1,1,1
             Rectangle:
@@ -139,11 +139,11 @@
                 pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
                 source: "Graphics/Rope_set.png"
             Rectangle:
-                pos: 23, self.top-self.size[1]
+                pos: 23, self.pos[1]
                 size: 36*1.5, root.height - 150 - self.pos[1]
                 source:"Graphics/Rope.png"
             Rectangle:
-                pos: root.width * root.limit_x - 27 - 36*1.5, self.top-self.size[1]
+                pos: root.width * root.limit_x - 27 - 36*1.5, self.pos[1]
                 size: 36*1.5, root.height - 150 - self.pos[1]
                 source:"Graphics/Rope.png"
 
@@ -176,7 +176,7 @@
 
     Label:
         id:health
-        text:"%d/%d" % (clicker_cell.cell_weight, 200)
+        text:"%d/%d" % (clicker_cell.cell_weight, 100)
         font_size:"20"
         center_y:root.height-30-10
         center_x:root.width*root.limit_x*4/5+40

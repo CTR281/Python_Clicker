@@ -98,7 +98,7 @@ class ClickerCell(Widget):
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
 
-    cell_weight = BoundedNumericProperty(100, min=0, max= 200, errorhandler= lambda x: 200 if x >200 else 0)
+    cell_weight = BoundedNumericProperty(50, min=0, max= 100, errorhandler= lambda x: 100 if x >100 else 0)
     cell_size = BoundedNumericProperty(101, min=50, max= 150, errorhandler=lambda x: 150 if x > 150 else 50)
 
     fade_factor = NumericProperty(0.1)
@@ -139,10 +139,10 @@ class ClickerCell(Widget):
         self.cell_weight += amount
         self.cell_size += amount
         self.size = self.cell_size, self.cell_size
-        if self.cell_weight < 200:
-            self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/200)*self.game.height*4/8
+        if self.cell_weight < 100:
+            self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/100)*self.game.height*4/8
             self.game.health.color = [1,1,1,1]
-        if self.cell_weight == 200:
+        if self.cell_weight == 100:
             self.hit_treasure(amount)
 
     def collide(self, enemy, game):

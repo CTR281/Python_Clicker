@@ -9,11 +9,13 @@ import kivy.uix.label
 from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty, StringProperty, BoundedNumericProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
+from kivy.animation import *
 from random import randint
 from math import *
 
 
 class Enemy(Widget):
+
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
@@ -81,10 +83,17 @@ class ClickerCell(Widget):
     pos_rectangle_x, pos_rectangle_y= NumericProperty(0), NumericProperty(0)
     pos_rectangle = ReferenceListProperty(pos_rectangle_x, pos_rectangle_y)
 
+    score = NumericProperty(0)
+
+    game = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super(ClickerCell, self).__init__(**kwargs)
         self.size = self.cell_size, self.cell_size
-        self.game = ObjectProperty(None)
+
+    def add_score(self, amount):
+        self.score += amount
+
 
     def add_weight(self, amount):
         self.cell_weight += amount
@@ -92,6 +101,13 @@ class ClickerCell(Widget):
         self.size = self.cell_size, self.cell_size
         if self.cell_weight <= 200:
             self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/200)*self.game.height*4/8
+            self.game.health.color = [0,0,0,1]
+        if self.cell_weight == 200:
+            self.game.health.color =  [1,0.8,0,1]
+            self.add_score(amount)
+            self.game.tresor.pos[0]= self.game.width*3/8-50
+            anim=Animation(x=self.game.tresor.pos[0]+8, y=self.game.tresor.pos[1], duration =0.2) + Animation(x=self.game.tresor.pos[0]-8, y=self.game.tresor.pos[1], duration =0.2)+Animation(x=self.game.tresor.pos[0], y=self.game.tresor.pos[1], duration =0.2)
+            anim.start(self.game.tresor)
 
     def collide(self, enemy, game):
         if sqrt((self.center_x-enemy.center_x)**2 + (self.center_y-enemy.center_y)**2) < (self.size[0]+enemy.size[0])/2:
@@ -116,10 +132,13 @@ class ClickerCell(Widget):
         else:
             print("Not Enough Weight")
 
+class Tresor(Widget):
+    pass
 
 class ClickerGame(Widget):
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
+    tresor = ObjectProperty(None)
     auto_tier1 = ObjectProperty(tier=StringProperty("1"))
     auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 

@@ -5,7 +5,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-            source: 'Graphics/Aventurer.png'
+            source: '../Graphics/Aventurer.png'
 
 
 <Tresor>:
@@ -15,7 +15,7 @@
         Rectangle:
             pos:self.pos
             size: 100,70
-            source: 'Graphics/treasure.png'
+            source: '../Graphics/treasure.png'
 
 
 
@@ -68,24 +68,36 @@
             size: root.size
             pos:root.pos
         Color:
-            rgb: 1, 1, 1
+            rgb: 1, 1, 1, 1
         Rectangle:
             id: background
             size:root.size[0]* 3/4, root.size[1] * 7/8
             pos:0, root.size[1] * 1/8
-            source: 'Graphics/Background.png'
+            texture: root.dirt
         Rectangle:
             id: spikes
-            size: root.width * 3/4, root.height * 1/8 # root.height*1/8
+            size: root.width * 3/4, root.height * 1/10
             pos: root.pos[0], root.pos[1] + root.height*1/8 + 10
-            source: 'Graphics/spike.png'
+            texture: root.spikes
+        Rectangle:
+            size: 36 * 1.5, 46 * 1.5
+            pos: 25, root.height - 150
+            source: "../Graphics/Rope_set.png"
+        Rectangle:
+            size: 36 * 1.5, 46 * 1.5
+            pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
+            source: "../Graphics/Rope_set.png"
+        Rectangle:
+            pos: 23, 100
+            size: 36*1.5, root.height - 150 - root.height * 1/8
+            source:"../Graphics/Rope.png"
+
         Color:
             rgba: 0,0,0,1
         Rectangle:
             id: vertical
             size: 10, root.height
             pos: root.width*root.limit_x, 0
-
         Rectangle:
             id: horizontal
             size: root.width*root.limit_x, 10
@@ -111,11 +123,12 @@
                 size: 10,self.top-self.size[1]-root.height*root.limit_y-30
                 pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
             Color:
-                rgba: 0.3,0.1,0.1,1
+                rgba: 1, 1, 1, 1#0.3,0.1,0.1,1
             Rectangle:
                 id: plateforme_horizontale
-                size: 100, 20
-                pos: root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
+                size: root.width * root.limit_x - 20, 20
+                pos: 10, self.top - self.size[1] -20#root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
+                texture:root.bridge
             Color:
                 rgba: 1,0,0,1
             Rectangle:

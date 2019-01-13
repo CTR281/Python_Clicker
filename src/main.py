@@ -74,14 +74,7 @@ class ClickerCell(Widget):
     fade_factor = NumericProperty(0.1)
     fade_list = [0 * k for k in range(100)]
 
-    size_plateforme_x,size_plateforme_y=NumericProperty(0),NumericProperty(0)
-    size_plateforme =ReferenceListProperty(size_plateforme_x,size_plateforme_y)
-    pos_plateforme_x, pos_plateforme_y = NumericProperty(0), NumericProperty(0)
-    pos_plateforme = ReferenceListProperty(pos_plateforme_x, pos_plateforme_y)
-
     jauge_pv = NumericProperty(0)
-    pos_rectangle_x, pos_rectangle_y= NumericProperty(0), NumericProperty(0)
-    pos_rectangle = ReferenceListProperty(pos_rectangle_x, pos_rectangle_y)
 
     score = NumericProperty(0)
 

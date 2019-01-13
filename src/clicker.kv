@@ -5,30 +5,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-        Color:
-            rgba: 0.3,0.1,0.1,1
-        Rectangle:
-            id: plateforme_verticale
-            size: self.size_plateforme
-            pos: self.pos_plateforme
-        Color:
-            rgba: 0.3,0.1,0.1,1
-        Rectangle:
-            id: plateforme_horizontale
-            size: 100, 20
-            pos: self.pos_plateforme[0]-45, self.top-self.size[1]-20
-        Color:
-            rgba: 1,0,0,1
-        Rectangle:
-            id:jauge
-            pos:50, self.pos_rectangle_y
-            size: self.jauge_pv, 20
-        Color:
-            rgba: 0,1,0,1
-        Rectangle:
-            id:jauge verte
-            pos:50, self.pos_rectangle_y
-            size:self.jauge_pv*(self.cell_weight/200), 20
+
 
 <Tresor>:
     canvas:
@@ -106,11 +83,35 @@
     ClickerCell:
         id: clicker_cell
         center: root.width * 3 / 8, root.height * 3 / 8 +25 +10
-        size_plateforme: 10,self.top-self.size[1]-root.height*root.limit_y-30
-        pos_plateforme: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
         jauge_pv: root.width*root.limit_x*4/5+20
-        pos_rectangle_y : root.height-30
         game: root
+
+        canvas:
+
+            Color:
+                rgba: 0.3,0.1,0.1,1
+            Rectangle:
+                id: plateforme_verticale
+                size: 10,self.top-self.size[1]-root.height*root.limit_y-30
+                pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
+            Color:
+                rgba: 0.3,0.1,0.1,1
+            Rectangle:
+                id: plateforme_horizontale
+                size: 100, 20
+                pos: root.width*root.limit_x*0.5-5-45, self.top-self.size[1]-20
+            Color:
+                rgba: 1,0,0,1
+            Rectangle:
+                id:jauge
+                pos:50, root.height-30
+                size: root.width*root.limit_x*4/5+20, 20
+            Color:
+                rgba: 0,1,0,1
+            Rectangle:
+                id:jauge verte
+                pos:50, root.height-30
+                size:self.jauge_pv*(self.cell_weight/200), 20
 
 
         Label:
@@ -144,7 +145,7 @@
         id:health
         text:"%d/%d" % (clicker_cell.cell_weight, 200)
         font_size:"20"
-        center_y:clicker_cell.pos_rectangle_y-10
+        center_y:root.height-30-10
         center_x:root.width*root.limit_x*4/5+40
         color: 0, 0, 0, 1
 

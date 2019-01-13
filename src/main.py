@@ -132,7 +132,7 @@ class ClickerCell(Widget):
         self.size = self.cell_size, self.cell_size
         if self.cell_weight < 200:
             self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/200)*self.game.height*4/8
-            self.game.health.color = [0,0,0,1]
+            self.game.health.color = [1,1,1,1]
         if self.cell_weight == 200:
             self.hit_treasure(amount)
 
@@ -182,13 +182,13 @@ class ClickerGame(Widget):
 
     def __init__(self, **kwargs):
         super(ClickerGame, self).__init__(**kwargs)
-        self.spikes = Image(source="../Graphics/Spike.png").texture
+        self.spikes = Image(source="Graphics/Spike.png").texture
         self.spikes.wrap = 'repeat'
         self.spikes.uvsize = 10,-1
-        self.dirt = Image(source="../Graphics/Background.png").texture
+        self.dirt = Image(source="Graphics/Background.png").texture
         self.dirt.wrap = 'repeat'
         self.dirt.uvsize = 20,20
-        self.bridge = Image(source="../Graphics/Bridge.png").texture
+        self.bridge = Image(source="Graphics/Bridge.png").texture
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 
@@ -266,4 +266,3 @@ class ClickerApp(App):
 
 if __name__ == '__main__':
     ClickerApp().run()
-

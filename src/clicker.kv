@@ -5,7 +5,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-            source: '../Graphics/Aventurer.png'
+            source: 'Graphics/Aventurer.png'
 
 
 <Tresor>:
@@ -15,7 +15,7 @@
         Rectangle:
             pos:self.pos
             size: 100,70
-            source: '../Graphics/treasure.png'
+            source: 'Graphics/treasure.png'
 
 
 
@@ -39,7 +39,7 @@
             size:5, root.pv
     Label:
         text: "%d/%d" % (root.enemy_weight,root.max)
-        color: 0, 0, 0, 1
+        color: 1, 1, 1, 1
         center: root.pos[0]+root.size[0]+10, root.pos[1] + root.size[1] + 10
 
 <AutoClicker>:
@@ -77,21 +77,8 @@
         Rectangle:
             id: spikes
             size: root.width * 3/4, root.height * 1/10
-            pos: root.pos[0], root.pos[1] + root.height*1/8 + 10
+            pos: root.pos[0], root.height*1/16 + 10
             texture: root.spikes
-        Rectangle:
-            size: 36 * 1.5, 46 * 1.5
-            pos: 25, root.height - 150
-            source: "../Graphics/Rope_set.png"
-        Rectangle:
-            size: 36 * 1.5, 46 * 1.5
-            pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
-            source: "../Graphics/Rope_set.png"
-        Rectangle:
-            pos: 23, 100
-            size: 36*1.5, root.height - 150 - root.height * 1/8
-            source:"../Graphics/Rope.png"
-
         Color:
             rgba: 0,0,0,1
         Rectangle:
@@ -118,10 +105,10 @@
 
             Color:
                 rgba: 0.3,0.1,0.1,1
-            Rectangle:
-                id: plateforme_verticale
-                size: 10,self.top-self.size[1]-root.height*root.limit_y-30
-                pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
+           # Rectangle:
+           #     id: plateforme_verticale
+           #     size: 10,self.top-self.size[1]-root.height*root.limit_y-30
+           #     pos: root.width*root.limit_x*0.5-5, root.height*root.limit_y+10
             Color:
                 rgba: 1, 1, 1, 1#0.3,0.1,0.1,1
             Rectangle:
@@ -141,7 +128,24 @@
                 id:jauge verte
                 pos:50, root.height-30
                 size:self.jauge_pv*(self.cell_weight/200), 20
-
+            Color:
+                rgba: 1,1,1,1
+            Rectangle:
+                size: 36 * 1.5, 46 * 1.5
+                pos: 25, root.height - 150
+                source: "Graphics/Rope_set.png"
+            Rectangle:
+                size: 36 * 1.5, 46 * 1.5
+                pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
+                source: "Graphics/Rope_set.png"
+            Rectangle:
+                pos: 23, self.top-self.size[1]
+                size: 36*1.5, root.height - 150 - self.pos[1]
+                source:"Graphics/Rope.png"
+            Rectangle:
+                pos: root.width * root.limit_x - 27 - 36*1.5, self.top-self.size[1]
+                size: 36*1.5, root.height - 150 - self.pos[1]
+                source:"Graphics/Rope.png"
 
         Label:
             text:"Gold:%d" % clicker_cell.gold
@@ -176,7 +180,7 @@
         font_size:"20"
         center_y:root.height-30-10
         center_x:root.width*root.limit_x*4/5+40
-        color: 0, 0, 0, 1
+        color: 1, 1, 1, 1
 
     Label:
         text:"%d" % int(root.timer)
@@ -252,5 +256,4 @@
    #     font_size:"30"
    #     color:0.5,0,1,1
    #     center_x:55
-   #     center_y:root.height*1/4 +55
-
+# center_y:root.height*1/4 +55

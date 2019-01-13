@@ -105,14 +105,21 @@ class ClickerCell(Widget):
     fade_list = [0 * k for k in range(100)]
 
     jauge_pv = NumericProperty(0)
+    invulnerable = NumericProperty(0)
 
     gold = NumericProperty(0)
 
     game = ObjectProperty(None)
 
+    color2 = NumericProperty(1)
+    color= NumericProperty(1)
+
     def __init__(self, **kwargs):
         super(ClickerCell, self).__init__(**kwargs)
         self.size = self.cell_size, self.cell_size
+
+    def on_invulnerable(self, instance, value):
+        pass
 
     def add_score(self, amount):
         self.gold += amount
@@ -139,9 +146,18 @@ class ClickerCell(Widget):
             self.hit_treasure(amount)
 
     def collide(self, enemy, game):
-        if self.collide_widget(enemy):
-            self.add_weight(-enemy.max)
-            game.remove_widget(enemy)
+        def switch(dt):
+            self.invulnerable = 0
+            self.color, self.color2 = 1, 1
+        if self.invulnerable == 0:
+            if self.collide_widget(enemy):
+                self.invulnerable = 2
+                self.color, self.color2= 0, 0.8
+                self.add_weight(-enemy.max)
+                if enemy.type != 'blue':
+                    game.kill_enemy(enemy)
+                Clock.schedule_once(switch, self.invulnerable)
+
 
     def grow(self):
         self.add_weight(self.feedpower)
@@ -243,6 +259,7 @@ class ClickerGame(Widget):
             self.cell.fade()
         if self.count % 30 == 0:
             self.timer += 1
+            #self.spawn_enemy('blue', pos = None)
             if self.timer >= 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
@@ -250,7 +267,7 @@ class ClickerGame(Widget):
             if int(self.timer) % 1 == 0:
                 self.cell.fade()
             if self.phase2:
-                if int(self.timer) % 5 == 0:
+               if int(self.timer) % 5 == 0:
                     self.spawn_enemy('yellow', pos = None)
             self.autofeed()
 

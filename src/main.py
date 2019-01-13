@@ -11,7 +11,7 @@ from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProper
 from kivy.vector import Vector
 from kivy.clock import Clock
 from kivy.animation import *
-from random import randint, choice
+from random import randint, choice, random
 from math import *
 
 
@@ -198,6 +198,11 @@ class ClickerGame(Widget):
     count = 0
     phase2 = False
 
+    enemy_red={"Type":'red',"Tmin":3,"Tmax":6.6,"Timer":0, "Counter":0} # type,Tmin, Tmax, Timer
+    enemy_blue={"Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
+    enemy_yellow={"Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
+    enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow}
+
     def __init__(self, **kwargs):
         super(ClickerGame, self).__init__(**kwargs)
         self.spikes = Image(source="Graphics/Spike.png").texture
@@ -223,6 +228,15 @@ class ClickerGame(Widget):
 
     def spawn_enemy(self,type, pos):
         self.add_widget(Enemy(type, pos = pos))
+
+    def is_spawn(self,enemy_type):
+        if enemy_type['Timer'] > enemy_type['Tmin']:
+            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
+            r=random()
+            if r<f:
+                self.spawn_enemy(enemy_type['Type'], pos = None)
+                enemy_type['Timer']=0
+                enemy_type['Counter']=0
 
 
     def bounce(self, enemy):
@@ -255,20 +269,25 @@ class ClickerGame(Widget):
             return
 
         self.count += 1
+        for key in self.enemy_type.keys():
+            self.enemy_type[key]['Counter']+=1
+            self.is_spawn(self.enemy_type[key])
+
         if self.count % 3 == 0:
             self.cell.fade()
         if self.count % 30 == 0:
             self.timer += 1
-            #self.spawn_enemy('blue', pos = None)
+            for key in self.enemy_type.keys():
+                self.enemy_type[key]['Timer'] += 1
             if self.timer >= 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
                 self.cell.fade_factor += self.timer / 5
             if int(self.timer) % 1 == 0:
                 self.cell.fade()
-            if self.phase2:
-               if int(self.timer) % 5 == 0:
-                    self.spawn_enemy('yellow', pos = None)
+          #  if self.phase2:
+          #     if int(self.timer) % 5 == 0:
+          #          self.spawn_enemy('yellow', pos = None)
             self.autofeed()
 
         for enemy in self.children:

@@ -29,7 +29,7 @@ class Enemy(Widget):
     color_4 = NumericProperty(0)
     color = ReferenceListProperty(color_1,color_2,color_3,color_4)
 
-    def __init__(self,type, **kwarg):
+    def __init__(self,type, pos, **kwarg):
         super(Enemy, self).__init__(**kwarg)
         self.type = type
         self.side = choice([-1,1])
@@ -42,7 +42,7 @@ class Enemy(Widget):
             self.enemy_weight = randint(4, 8)
             self.color = 1, 0, 0, 1
 
-        if self.type == 'purple':
+        if self.type == 'yellow':
             while self.velocity_x == 0 or self.velocity_y == 0:
                 self.velocity_x = 1*self.side
                 self.velocity_y = randint(-1,1)
@@ -56,8 +56,10 @@ class Enemy(Widget):
             self.velocity_x = 6*self.side
             self.enemy_weight = randint(1,3)
             self.color = 0, 0.2, 1, 1
-
-        self.pos = (5 if self.side == 1 else 450, randint(210, 450))
+        if pos != None:
+            self.pos = pos
+        else:
+            self.pos = (5 if self.side == 1 else 450, randint(210, 450))
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
         self.pv = self.size[0]
         self.max = self.enemy_weight
@@ -203,9 +205,8 @@ class ClickerGame(Widget):
         else:
             print("Not Enought weight")
 
-    def spawn_enemy(self):
-        type = ['red','blue','purple']
-        self.add_widget(Enemy(choice(type)))
+    def spawn_enemy(self,type, pos):
+        self.add_widget(Enemy(type, pos = pos))
 
 
     def bounce(self, enemy):
@@ -216,7 +217,10 @@ class ClickerGame(Widget):
 
     def kill_enemy(self, enemy):
         if enemy.type == 'yellow':
-            self.add_widget()
+            pos = enemy.pos
+            self.spawn_enemy('red', pos)
+            self.spawn_enemy('red',pos)
+            self.spawn_enemy('red',pos)
         self.remove_widget(enemy)
 
     def on_touch_down(self, touch):
@@ -247,7 +251,7 @@ class ClickerGame(Widget):
                 self.cell.fade()
             if self.phase2:
                 if int(self.timer) % 5 == 0:
-                    self.spawn_enemy()
+                    self.spawn_enemy('yellow', pos = None)
             self.autofeed()
 
         for enemy in self.children:

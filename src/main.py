@@ -140,7 +140,7 @@ class ClickerCell(Widget):
         self.cell_size += amount
         self.size = self.cell_size, self.cell_size
         if self.cell_weight < 100:
-            self.center = self.game.width*3/8, 25+10+self.game.height*1/8+ (self.cell_weight/100)*self.game.height*4/8
+            self.center = self.game.width*3/8, 25+30+self.game.height*1/8+ (self.cell_weight/100)*self.game.height*4/8
             self.game.health.color = [1,1,1,1]
         if self.cell_weight == 100:
             self.hit_treasure(amount)

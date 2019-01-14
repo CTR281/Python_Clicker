@@ -205,13 +205,13 @@ class ClickerGame(Widget):
 
     def __init__(self, **kwargs):
         super(ClickerGame, self).__init__(**kwargs)
-        self.spikes = Image(source="Graphics/Spike.png").texture
+        self.spikes = Image(source="../Graphics/Spike.png").texture
         self.spikes.wrap = 'repeat'
         self.spikes.uvsize = 10,-1
-        self.dirt = Image(source="Graphics/Background.png").texture
+        self.dirt = Image(source="../Graphics/Background.png").texture
         self.dirt.wrap = 'repeat'
         self.dirt.uvsize = 20,20
-        self.bridge = Image(source="Graphics/Bridge.png").texture
+        self.bridge = Image(source="../Graphics/Bridge.png").texture
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 

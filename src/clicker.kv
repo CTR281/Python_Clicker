@@ -5,7 +5,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-            source: 'Graphics/Aventurer.png'
+            source: '../Graphics/Aventurer.png'
 
 
 <Tresor>:
@@ -15,7 +15,7 @@
         Rectangle:
             pos:self.pos
             size: 100,70
-            source: 'Graphics/treasure.png'
+            source: '../Graphics/treasure.png'
 
 
 
@@ -27,7 +27,7 @@
         Ellipse:
             pos:self.pos
             size:self.size
-            #source: 'Graphics/bat.gif'
+            #source: '../Graphics/bat.gif'
 
         Color:
             rgba: 1, 0, 0, 1
@@ -135,19 +135,19 @@
             Rectangle:
                 size: 36 * 1.5, 46 * 1.5
                 pos: 25, root.height - 150
-                source: "Graphics/Rope_set.png"
+                source: "../Graphics/Rope_set.png"
             Rectangle:
                 size: 36 * 1.5, 46 * 1.5
                 pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
-                source: "Graphics/Rope_set.png"
+                source: "../Graphics/Rope_set.png"
             Rectangle:
                 pos: 23, self.pos[1]
                 size: 36*1.5, root.height - 150 - self.pos[1]
-                source:"Graphics/Rope.png"
+                source:"../Graphics/Rope.png"
             Rectangle:
                 pos: root.width * root.limit_x - 27 - 36*1.5, self.pos[1]
                 size: 36*1.5, root.height - 150 - self.pos[1]
-                source:"Graphics/Rope.png"
+                source:"../Graphics/Rope.png"
 
         Label:
             text:"Gold:%d" % clicker_cell.gold

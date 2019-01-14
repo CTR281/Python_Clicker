@@ -128,11 +128,11 @@ class ClickerCell(Widget):
         self.center_y = 25 + 10 + self.game.height * 5/8
         self.game.health.color = [1, 0.8, 0, 1]
         self.add_gold(amount)
-        self.game.tresor.pos[0] = self.game.width * 3 / 8 - 50
-        anim = Animation(x=self.game.tresor.pos[0] + 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
-            x=self.game.tresor.pos[0] - 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
-            x=self.game.tresor.pos[0], y=self.game.tresor.pos[1], duration=0.2)
-        anim.start(self.game.tresor)
+        self.game.treasure.pos[0] = self.game.width * 3 / 8 - 50
+        anim = Animation(x=self.game.treasure.pos[0] + 8, y=self.game.treasure.pos[1], duration=0.2) + Animation(
+            x=self.game.treasure.pos[0] - 8, y=self.game.treasure.pos[1], duration=0.2) + Animation(
+            x=self.game.treasure.pos[0], y=self.game.treasure.pos[1], duration=0.2)
+        anim.start(self.game.treasure)
 
 
     def add_weight(self, amount):
@@ -177,13 +177,13 @@ class ClickerCell(Widget):
         else:
             print("Not Enough Weight")
 
-class Tresor(Widget):
+class Treasure(Widget):
     pass
 
 class ClickerGame(Widget):
     cell = ObjectProperty(None)
     feed = ObjectProperty(None)
-    tresor = ObjectProperty(None)
+    treasure = ObjectProperty(None)
     auto_tier1 = ObjectProperty(tier=StringProperty("1"))
     auto_tier2 = ObjectProperty(tier=StringProperty("2"))
 

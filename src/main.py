@@ -17,6 +17,7 @@ from math import *
 from Clickergame import ClickerGame
 
 
+
 class ClickerApp(App):
     def build(self):
         self.game = ClickerGame()

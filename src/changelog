@@ -5,4 +5,4 @@ create Enemy.py
 create Treasure.py
 delete attributs game, gold, feedpower, upgrade_feed_cost, fade_factor, fade_list from ClickerCell
 add attributs gold, fade_factor, fade_list, feedpower, feedpower_upgrade_cost to ClickerGame
-add add_gold(), add_weight(), fade_factor, fade_list, hit_treasure(), upgrade_feed_power() to ClickerGame, change add_weight(), delete add_gold(), hit_treasure(), upgrade_feed_power() from ClickerCell
+add add_gold(), add_weight(), hit_treasure(), upgrade_feed_power() to ClickerGame, change add_weight(), delete add_gold(), hit_treasure(), upgrade_feed_power() from ClickerCell

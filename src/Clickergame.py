@@ -12,7 +12,9 @@ from Treasure import Treasure
 
 
 class ClickerGame(Widget):
+
     cell = ObjectProperty(None)
+
     feed = ObjectProperty(None)
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
@@ -64,6 +66,24 @@ class ClickerGame(Widget):
             self.health.color = [1, 0.8, 0, 1]
             self.hit_treasure(amount)
 
+    def autofeed(self):
+        self.add_weight(self.auto_tier1.autofeed())
+        self.add_weight(self.auto_tier2.autofeed())
+
+    def bounce(self, enemy):
+        if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
+            enemy.velocity_y *= -1
+        if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
+            enemy.velocity_x *= -1
+
+    def buy_auto(self, autoclicker):
+        if self.cell.cell_weight >= autoclicker.get_cost():
+            self.add_weight(-autoclicker.get_cost())
+            autoclicker.buy_auto()
+        else:
+            print("Not Enought weight")
+
+
     def fade(self):
         if self.cell.cell_weight > 0:
             if self.cell.cell_weight - self.fade_factor > 0:
@@ -80,29 +100,6 @@ class ClickerGame(Widget):
             x=self.tresor.pos[0], y=self.tresor.pos[1], duration=0.2)
         anim.start(self.tresor)
 
-    def upgrade_feedpower(self):
-        if self.cell.cell_weight >= self.feedpower_upgrade_cost:
-            self.add_weight(-self.feedpower_upgrade_cost)
-            self.feedpower += 1
-            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 1.15)
-        else:
-            print("Not Enough Weight")
-
-
-    def autofeed(self):
-        self.add_weight(self.auto_tier1.autofeed())
-        self.add_weight(self.auto_tier2.autofeed())
-
-    def buy_auto(self, autoclicker):
-        if self.cell.cell_weight >= autoclicker.get_cost():
-            self.add_weight(-autoclicker.get_cost())
-            autoclicker.buy_auto()
-        else:
-            print("Not Enought weight")
-
-    def spawn_enemy(self,type, pos):
-        self.add_widget(Enemy(type, pos = pos))
-
     def is_spawn(self,enemy_type):
         if enemy_type['Timer'] > enemy_type['Tmin']:
             f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
@@ -111,13 +108,6 @@ class ClickerGame(Widget):
                 self.spawn_enemy(enemy_type['Type'], pos = None)
                 enemy_type['Timer']=0
                 enemy_type['Counter']=0
-
-
-    def bounce(self, enemy):
-        if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
-            enemy.velocity_y *= -1
-        if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
-            enemy.velocity_x *= -1
 
     def kill_enemy(self, enemy):
         if enemy.type == 'yellow':
@@ -136,6 +126,17 @@ class ClickerGame(Widget):
                     self.kill_enemy(child)
             else:
                 child.on_touch_down(touch)
+
+    def spawn_enemy(self,type, pos):
+        self.add_widget(Enemy(type, pos = pos))
+
+    def upgrade_feedpower(self):
+        if self.cell.cell_weight >= self.feedpower_upgrade_cost:
+            self.add_weight(-self.feedpower_upgrade_cost)
+            self.feedpower += 1
+            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 1.15)
+        else:
+            print("Not Enough Weight")
 
     def update(self, dt):
         if int(self.cell.cell_weight*10) == 0:

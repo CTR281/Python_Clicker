@@ -19,8 +19,6 @@ class ClickerCell(Widget):
         super(ClickerCell, self).__init__(**kwargs)
         self.size = self.cell_size, self.cell_size
 
-    def on_invulnerable(self, instance, value):
-        pass
 
     def add_weight(self, amount):
         self.cell_weight += amount
@@ -36,7 +34,10 @@ class ClickerCell(Widget):
             if self.collide_widget(enemy):
                 self.invulnerable = 1
                 self.color, self.color2= 0, 0.8
-                self.add_weight(-enemy.max)
+                game.add_weight(-enemy.max)
                 if enemy.type != 'blue':
                     game.kill_enemy(enemy)
                 Clock.schedule_once(switch, self.invulnerable)
+
+    def on_invulnerable(self, instance, value):
+        pass

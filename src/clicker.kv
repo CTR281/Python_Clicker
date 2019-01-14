@@ -27,6 +27,8 @@
         Ellipse:
             pos:self.pos
             size:self.size
+            #source: 'Graphics/bat.gif'
+
         Color:
             rgba: 1, 0, 0, 1
         Rectangle:
@@ -160,7 +162,7 @@
         id: feed_button
         name:"feed_button"
         background_color: 0,1,0,1
-        text:"Feed!"
+        text:"Push!"
         font_size: 20
         size:root.width * 3 / 8, root.height * 1 / 8
         on_press: clicker_cell.grow()

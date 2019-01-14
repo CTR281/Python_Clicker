@@ -52,7 +52,7 @@ class Enemy(Widget):
 
         if self.type == 'blue':
             while self.velocity_y == 0:
-                self.velocity_y = 8*randint(-1,1)
+                self.velocity_y = 10*randint(-1,1)
             self.velocity_x = 6*self.side
             self.enemy_weight = randint(1,3)
             self.color = 0, 0.2, 1, 1
@@ -102,7 +102,7 @@ class ClickerCell(Widget):
     cell_size = BoundedNumericProperty(101, min=50, max= 150, errorhandler=lambda x: 150 if x > 150 else 50)
 
     fade_factor = NumericProperty(0.1)
-    fade_list = [0 * k for k in range(100)]
+    fade_list = [10 * k for k in range(1,10)]
 
     jauge_pv = NumericProperty(0)
     invulnerable = NumericProperty(0)
@@ -121,13 +121,13 @@ class ClickerCell(Widget):
     def on_invulnerable(self, instance, value):
         pass
 
-    def add_score(self, amount):
+    def add_gold(self, amount):
         self.gold += amount
 
     def hit_treasure(self, amount):
         self.center_y = 25 + 10 + self.game.height * 5/8
         self.game.health.color = [1, 0.8, 0, 1]
-        self.add_score(amount)
+        self.add_gold(amount)
         self.game.tresor.pos[0] = self.game.width * 3 / 8 - 50
         anim = Animation(x=self.game.tresor.pos[0] + 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
             x=self.game.tresor.pos[0] - 8, y=self.game.tresor.pos[1], duration=0.2) + Animation(
@@ -198,7 +198,7 @@ class ClickerGame(Widget):
     count = 0
     phase2 = False
 
-    enemy_red={"Type":'red',"Tmin":3,"Tmax":6.6,"Timer":0, "Counter":0} # type,Tmin, Tmax, Timer
+    enemy_red={"Type":'red',"Tmin":8,"Tmax":13.6,"Timer":0, "Counter":0} # type,Tmin, Tmax, Timer
     enemy_blue={"Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
     enemy_yellow={"Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
     enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow}
@@ -251,6 +251,7 @@ class ClickerGame(Widget):
             self.spawn_enemy('red', pos)
             self.spawn_enemy('red',pos)
             self.spawn_enemy('red',pos)
+        self.cell.add_gold(enemy.max)
         self.remove_widget(enemy)
 
     def on_touch_down(self, touch):
@@ -263,12 +264,13 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def update(self, dt):
-        if self.cell.cell_weight == 0:
+        if int(self.cell.cell_weight*10) == 0:
             self.gameover = "Game Over"
         if self.gameover == "Game Over":
-            return
+            return 
 
         self.count += 1
+        print(self.cell.cell_weight)
         for key in self.enemy_type.keys():
             self.enemy_type[key]['Counter']+=1
             self.is_spawn(self.enemy_type[key])
@@ -282,7 +284,7 @@ class ClickerGame(Widget):
             if self.timer >= 0:
                 self.phase2 = True
             if self.timer in self.cell.fade_list:
-                self.cell.fade_factor += self.timer / 5
+                self.cell.fade_factor += 0.1
             if int(self.timer) % 1 == 0:
                 self.cell.fade()
           #  if self.phase2:

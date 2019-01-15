@@ -159,9 +159,6 @@ class ClickerGame(Widget):
                 self.phase2 = True
             if self.timer in self.fade_list:
                 self.fade_factor += 0.1
-          #  if self.phase2:
-          #     if int(self.timer) % 5 == 0:
-          #          self.spawn_enemy('yellow', pos = None)
             self.autofeed()
 
         for enemy in self.children:

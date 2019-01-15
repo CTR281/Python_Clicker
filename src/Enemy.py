@@ -11,16 +11,18 @@ class Enemy(Image):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
+
     enemy_weight = NumericProperty(0)
     pv= NumericProperty(0)
     max=NumericProperty(0)
+
     color_1 = NumericProperty(0)
     color_2 = NumericProperty(0)
     color_3 = NumericProperty(0)
     color_4 = NumericProperty(0)
     color = ReferenceListProperty(color_1,color_2,color_3,color_4)
 
-    def __init__(self,type, pos, **kwarg):
+    def __init__(self,type, center, **kwarg):
         super(Enemy, self).__init__(**kwarg)
         self.type = type
         self.side = choice([-1,1])
@@ -47,10 +49,10 @@ class Enemy(Image):
             self.velocity_x = 6*self.side
             self.enemy_weight = randint(1,3)
             self.color = 0, 0.2, 1, 1
-        if pos != None:
-            self.pos = pos
+        if center != None:
+            self.center = center
         else:
-            self.pos = (5 if self.side == 1 else 450, randint(210, 450))
+            self.center = (50 if self.side == 1 else 550, randint(210, 450))
         self.size = self.enemy_weight * 5 + 20, self.enemy_weight * 5 + 20
         self.pv = self.size[0]
         self.max = self.enemy_weight

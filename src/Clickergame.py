@@ -23,19 +23,24 @@ class ClickerGame(Widget):
     tresor = ObjectProperty(None)
     auto_tier1 = ObjectProperty(None)
     auto_tier2 = ObjectProperty(None)
-    fade_factor = NumericProperty(0.1)
+    fade_factor = NumericProperty(0.1/3.0)
     fade_list = [10 * k for k in range(1,10)]
-    timer = NumericProperty(0)
     gold = NumericProperty(0)
     limit_x, limit_y =  6/8, 1/8
+
+    spawn_point_left = NumericProperty(0)
+    spawn_point_x_right = NumericProperty(0)
+    spawn_point_y_top = NumericProperty(0)
+    spawn_point_y_bottom = NumericProperty(0)
 
     spikes = ObjectProperty()
     dirt = ObjectProperty()
     bridge = ObjectProperty()
 
     gameover = StringProperty("")
-    count = 0
-    phase2 = False
+    counter = 0
+    timer = NumericProperty(0)
+    phase = 1
 
     enemy_red={"Type":'red',"Tmin":8,"Tmax":13.6,"Timer":0, "Counter":0} # type,Tmin, Tmax, Timer
     enemy_blue={"Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
@@ -64,7 +69,6 @@ class ClickerGame(Widget):
             self.cell.center = self.cell.center_x - amount / 2, 25+30+self.height*1/8+ (self.cell.cell_weight/100)*self.height*4/8
             self.health.color = [1,1,1,1]
         if self.cell.cell_weight == 100:
-            self.cell.center_y = 25 + 30 + self.height * 5 / 8
             self.health.color = [1, 0.8, 0, 1]
             self.hit_treasure(amount)
 
@@ -96,25 +100,17 @@ class ClickerGame(Widget):
             x=self.tresor.pos[0], y=self.tresor.pos[1], duration=0.2)
         anim.start(self.tresor)
 
-    def isgameover(self):
+    def is_gameover(self):
         if isclose(self.cell.cell_weight, 0, abs_tol = 0.001):
             self.gameover = "Game Over"
-
-    def is_spawn(self,enemy_type):
-        if enemy_type['Timer'] > enemy_type['Tmin']:
-            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
-            r=random()
-            if r<f:
-                self.spawn_enemy(enemy_type['Type'], pos = None)
-                enemy_type['Timer']=0
-                enemy_type['Counter']=0
+            return
 
     def kill_enemy(self, enemy):
         if enemy.type == 'yellow':
-            pos = enemy.pos
-            self.spawn_enemy('red', pos)
-            self.spawn_enemy('red',pos)
-            self.spawn_enemy('red',pos)
+            center = enemy.center
+            self.spawn_enemy('red', center)
+            self.spawn_enemy('red',center)
+            self.spawn_enemy('red',center)
         self.add_gold(enemy.max)
         self.remove_widget(enemy)
 
@@ -127,8 +123,8 @@ class ClickerGame(Widget):
             else:
                 child.on_touch_down(touch)
 
-    def spawn_enemy(self,type, pos):
-        self.add_widget(Enemy(type, pos = pos))
+    def spawn_enemy(self,type, center):
+        self.add_widget(Enemy(type, center = center))
 
     def upgrade_feedpower(self):
         if self.cell.cell_weight >= self.feedpower_upgrade_cost:
@@ -138,31 +134,73 @@ class ClickerGame(Widget):
         else:
             print("Not Enough Weight")
 
-    def update(self, dt):
-        print(self.cell.cell_weight)
-        self.isgameover()
-        if self.gameover == "Game Over":
-            return
+    def will_spawn(self,enemy_type):
+        if enemy_type['Timer'] > enemy_type['Tmin']:
+            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
+            r=random()
+            if r<f:
+                self.spawn_enemy(enemy_type['Type'], center = None)
+                enemy_type['Timer']=0
+                enemy_type['Counter']=0
 
-        self.count += 1
-        for key in self.enemy_type.keys():
-            self.enemy_type[key]['Counter']+=1
-            self.is_spawn(self.enemy_type[key])
-
-        if self.count % 3 == 0:
-            self.fade()
-        if self.count % 30 == 0:
-            self.timer += 1
+    def update_time(self):
+        self.counter += 1
+        if self.counter % 30 == 0:
+            self.timer +=1
             for key in self.enemy_type.keys():
                 self.enemy_type[key]['Timer'] += 1
-            if self.timer >= 0:
-                self.phase2 = True
-            if self.timer in self.fade_list:
-                self.fade_factor += 0.1
-            self.autofeed()
 
+    def update_phase(self):
+        if self.timer % 60 == 0:
+            self.phase += 1
+
+    def load_phase(self):
+        if self.phase == 1:
+            pass
+        pass
+
+    def on_phase(self):
+        self.load_phase()
+
+    def update_enemy(self):
         for enemy in self.children:
             if enemy.__class__.__name__ == "Enemy":
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
+        for key in self.enemy_type.keys():
+            self.enemy_type[key]['Counter'] += 1
+            self.will_spawn(self.enemy_type[key])
+
+    def update_cell(self):
+        self.fade()
+        if self.counter % 30 == 0:
+            self.autofeed()
+
+    def update(self, dt):
+        self.is_gameover()
+        self.update_time()
+        self.update_phase()
+        self.update_enemy()
+        self.update_cell()
+
+    #    self.count += 1
+    #    self.fade()
+    #    for key in self.enemy_type.keys():
+    #        self.enemy_type[key]['Counter']+=1
+    #        self.will_spawn(self.enemy_type[key])
+       # if self.count % 30 == 0:
+       #     self.timer += 1
+      #      for key in self.enemy_type.keys():
+      #          self.enemy_type[key]['Timer'] += 1
+      #      if self.timer >= 0:
+      #          self.phase2 = True
+      #       if self.timer in self.fade_list:
+      #          self.fade_factor += 0.1
+       #     self.autofeed()
+
+     #   for enemy in self.children:
+     #       if enemy.__class__.__name__ == "Enemy":
+     #           enemy.move()
+     #           self.cell.collide(enemy, self)
+     #           self.bounce(enemy)

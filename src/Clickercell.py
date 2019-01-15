@@ -39,7 +39,7 @@ class ClickerCell(Widget):
                 self.color, self.color2= 0, 0.8
                 game.add_weight(-enemy.max)
                 if enemy.type != 'blue':
-                    game.kill_enemy(enemy)
+                    game.kill_enemy(enemy, 0)
                 Clock.schedule_once(switch, self.invulnerable)
 
     def on_invulnerable(self, instance, value):

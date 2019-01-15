@@ -68,7 +68,7 @@ class ClickerGame(Widget):
     def add_weight(self, amount):
         self.cell.add_weight(amount)
         if self.cell.cell_weight < 100:
-            self.cell.center = self.cell.center_x - amount / 2, 25+30+self.height*1/8+ (self.cell.cell_weight/100)*self.height*4/8
+            self.cell.center = self.cell.center_x - amount / 2, 25+30+self.height * 1 / 8+ (self.cell.cell_weight/100)*self.height*4/8
             self.health.color = [1,1,1,1]
         if self.cell.cell_weight == 100:
             self.health.color = [1, 0.8, 0, 1]

@@ -121,31 +121,31 @@
                 rgba: 1,0,0,1
             Rectangle:
                 id:jauge
-                pos:50, root.height-30
+                pos:70, root.height-30
                 size: root.width*root.limit_x*4/5+40, 20
             Color:
                 rgba: 0,1,0,1
             Rectangle:
                 id:jauge verte
-                pos:50, root.height-30
+                pos:70, root.height-30
                 size:self.jauge_pv*(self.cell_weight/100), 20
             Color:
                 rgba: 1,1,1,1
             Rectangle:
                 size: 36 * 1.5, 46 * 1.5
-                pos: 25, root.height - 150
+                pos: 25, root.height - 155
                 source: "../Graphics/Rope_set.png"
             Rectangle:
                 size: 36 * 1.5, 46 * 1.5
-                pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 150
+                pos: root.width * root.limit_x - 25 - 36*1.5, root.height - 155
                 source: "../Graphics/Rope_set.png"
             Rectangle:
                 pos: 23, self.pos[1]
-                size: 36*1.5, root.height - 150 - self.pos[1]
+                size: 36*1.5, root.height - 155 - self.pos[1]
                 source:"../Graphics/Rope.png"
             Rectangle:
                 pos: root.width * root.limit_x - 27 - 36*1.5, self.pos[1]
-                size: 36*1.5, root.height - 150 - self.pos[1]
+                size: 36*1.5, root.height - 155 - self.pos[1]
                 source:"../Graphics/Rope.png"
 
     Label:
@@ -155,7 +155,7 @@
         text_size: self.size
         center_x:0+self.size[0]/2
         color: 1,0.9,0,1
-        top: root.height - 40
+        top: root.height - 50
 
     Button:
         id: feed_button
@@ -180,14 +180,14 @@
         text:"%d/%d" % (clicker_cell.cell_weight, 100)
         font_size:"20"
         center_y:root.height-30-10
-        center_x:root.width*root.limit_x*4/5+60
+        center_x:root.width*root.limit_x*4/5+80
         color: 1, 1, 1, 1
 
     Label:
         text: "%d" % int(root.timer)
         font_size: "40"
         #top: root.height+30
-        pos: root.pos[0]-30, root.height -70
+        pos: root.pos[0]-15, root.height -70
         color: 1, 0, 0, 1
 
     Label:

@@ -86,9 +86,7 @@ class ClickerGame(Widget):
             print("Not Enought weight")
 
     def fade(self):
-        if self.cell.cell_weight > 0:
-            if self.cell.cell_weight - self.fade_factor > 0:
-                self.add_weight(-self.fade_factor)
+        self.add_weight(-self.fade_factor)
 
     def hit_treasure(self, amount):
         self.add_gold(amount)
@@ -99,7 +97,7 @@ class ClickerGame(Widget):
         anim.start(self.tresor)
 
     def isgameover(self):
-        if isclose(self.cell.cell_weight, 0, abs_tol = 0.1):
+        if isclose(self.cell.cell_weight, 0, abs_tol = 0.001):
             self.gameover = "Game Over"
 
     def is_spawn(self,enemy_type):
@@ -141,12 +139,12 @@ class ClickerGame(Widget):
             print("Not Enough Weight")
 
     def update(self, dt):
+        print(self.cell.cell_weight)
         self.isgameover()
         if self.gameover == "Game Over":
             return
 
         self.count += 1
-        print(self.cell.cell_weight)
         for key in self.enemy_type.keys():
             self.enemy_type[key]['Counter']+=1
             self.is_spawn(self.enemy_type[key])

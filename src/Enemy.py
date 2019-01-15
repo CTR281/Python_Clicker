@@ -1,11 +1,12 @@
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ObjectProperty, ReferenceListProperty
 from kivy.vector import Vector
+from kivy.uix.image import Image
 from random import randint, choice
 
 
 
-class Enemy(Widget):
+class Enemy(Image):
 
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)

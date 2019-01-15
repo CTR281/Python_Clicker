@@ -21,7 +21,10 @@ class ClickerCell(Widget):
 
 
     def add_weight(self, amount):
-        self.cell_weight += amount
+        if self.cell_weight - amount < 0:
+            self.cell_weight = 0
+        else:
+            self.cell_weight += amount
         self.cell_size += amount
         self.size = self.cell_size, self.cell_size
 

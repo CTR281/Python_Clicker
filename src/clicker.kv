@@ -230,7 +230,8 @@
 
     AutoClicker:
         id: tier1
-        text:"Autofeed Tier " + str(root.auto_tier1.tier)
+        tier : "1"
+        text:"Autofeed Tier " + root.auto_tier1.tier
         buy_cost: 20
         feed_per_second:1
         center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
@@ -247,7 +248,8 @@
 
     AutoClicker:
         id: tier2
-        text:"Autofeed Tier " + str(root.auto_tier2.tier)
+        tier : "2"
+        text:"Autofeed Tier " + root.auto_tier2.tier
         feed_per_second:5
         buy_cost: 200
         center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size

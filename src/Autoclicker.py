@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty
+from kivy.properties import NumericProperty, StringProperty
 
 
 
@@ -9,7 +9,7 @@ class AutoClicker(Widget):
     amount = NumericProperty(0)
     buy_cost = NumericProperty(0)
     cost_increase = NumericProperty(1.2)
-    tier = NumericProperty(1)
+    tier = StringProperty(1)
 
     def autofeed(self):
         return self.feed_per_second * self.amount

@@ -2,7 +2,9 @@ from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.animation import Animation
 from kivy.uix.image import Image
+from kivy.vector import Vector
 from random import randint, choice, random
+from math import isclose
 
 from Enemy import Enemy
 from Autoclicker import AutoClicker
@@ -19,8 +21,8 @@ class ClickerGame(Widget):
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
     tresor = ObjectProperty(None)
-    auto_tier1 = ObjectProperty(tier=StringProperty("1"))
-    auto_tier2 = ObjectProperty(tier=StringProperty("2"))
+    auto_tier1 = ObjectProperty(None)
+    auto_tier2 = ObjectProperty(None)
     fade_factor = NumericProperty(0.1)
     fade_list = [10 * k for k in range(1,10)]
     timer = NumericProperty(0)
@@ -59,7 +61,7 @@ class ClickerGame(Widget):
     def add_weight(self, amount):
         self.cell.add_weight(amount)
         if self.cell.cell_weight < 100:
-            self.cell.center = self.width*3/8, 25+30+self.height*1/8+ (self.cell.cell_weight/100)*self.height*4/8
+            self.cell.center = self.cell.center_x - amount / 2, 25+30+self.height*1/8+ (self.cell.cell_weight/100)*self.height*4/8
             self.health.color = [1,1,1,1]
         if self.cell.cell_weight == 100:
             self.cell.center_y = 25 + 30 + self.height * 5 / 8
@@ -72,7 +74,7 @@ class ClickerGame(Widget):
 
     def bounce(self, enemy):
         if (enemy.pos[1] < self.height * 1 / 8 + 10) or (enemy.top > self.height):
-            enemy.velocity_y *= -1
+            enemy.velocity_y *=-1
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
 
@@ -83,14 +85,10 @@ class ClickerGame(Widget):
         else:
             print("Not Enought weight")
 
-
     def fade(self):
         if self.cell.cell_weight > 0:
             if self.cell.cell_weight - self.fade_factor > 0:
                 self.add_weight(-self.fade_factor)
-            else:
-                self.cell.cell_weight = 1
-
 
     def hit_treasure(self, amount):
         self.add_gold(amount)
@@ -99,6 +97,10 @@ class ClickerGame(Widget):
             x=self.tresor.pos[0] - 8, y=self.tresor.pos[1], duration=0.2) + Animation(
             x=self.tresor.pos[0], y=self.tresor.pos[1], duration=0.2)
         anim.start(self.tresor)
+
+    def isgameover(self):
+        if isclose(self.cell.cell_weight, 0, abs_tol = 0.1):
+            self.gameover = "Game Over"
 
     def is_spawn(self,enemy_type):
         if enemy_type['Timer'] > enemy_type['Tmin']:
@@ -139,8 +141,7 @@ class ClickerGame(Widget):
             print("Not Enough Weight")
 
     def update(self, dt):
-        if int(self.cell.cell_weight*10) == 0:
-            self.gameover = "Game Over"
+        self.isgameover()
         if self.gameover == "Game Over":
             return
 

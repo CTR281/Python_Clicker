@@ -16,12 +16,6 @@ class Enemy(Image):
     pv= NumericProperty(0)
     max=NumericProperty(0)
 
-    color_1 = NumericProperty(0)
-    color_2 = NumericProperty(0)
-    color_3 = NumericProperty(0)
-    color_4 = NumericProperty(0)
-    color = ReferenceListProperty(color_1,color_2,color_3,color_4)
-
     def __init__(self,type, center, **kwarg):
         super(Enemy, self).__init__(**kwarg)
         self.type = type

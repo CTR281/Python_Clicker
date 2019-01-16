@@ -10,7 +10,7 @@ from Enemy import Enemy
 from Autoclicker import AutoClicker
 from Clickercell import ClickerCell
 from Treasure import Treasure
-
+from Cannonball import Cannonball
 
 
 class ClickerGame(Widget):
@@ -42,10 +42,11 @@ class ClickerGame(Widget):
     timer = NumericProperty(0)
     phase = NumericProperty(0)
 
-    enemy_red={"Type":'red',"Tmin":8,"Tmax":13.6,"Timer":0, "Counter":0}
-    enemy_blue={"Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
-    enemy_yellow={"Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
-    enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow}
+    enemy_red={"Class":"Enemy","Type":'red',"Tmin":8,"Tmax":13.6,"Timer":0, "Counter":0}
+    enemy_blue={"Class":"Enemy","Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
+    enemy_yellow={"Class":"Enemy","Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
+    cannon = {"Class":"Cannonball","Type":'cannon',"Tmin":1, "Tmax":10.6, "Timer":0, "Counter":0}
+    enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow,'cannon': cannon}
 
     spawn_list = ['red']
 
@@ -126,6 +127,9 @@ class ClickerGame(Widget):
             else:
                 child.on_touch_down(touch)
 
+    def spawn_cannon(self):
+        self.add_widget(Cannonball())
+
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
 
@@ -136,15 +140,6 @@ class ClickerGame(Widget):
             self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 1.15)
         else:
             print("Not Enough Weight")
-
-    def will_spawn(self,enemy_type):
-        if enemy_type['Timer'] > enemy_type['Tmin']:
-            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
-            r=random()
-            if r<f:
-                self.spawn_enemy(enemy_type['Type'], center = None)
-                enemy_type['Timer']=0
-                enemy_type['Counter']=0
 
     def update_time(self):
         self.counter += 1
@@ -159,7 +154,7 @@ class ClickerGame(Widget):
 
     def load_phase(self):   #update Tmin, Tmax, spawn_list, fade_factor,
         if self.phase == 1:
-            self.spawn_list = ['red']
+            self.spawn_list = ['red', 'cannon']
 
         if self.phase == 2:
             self.spawn_list = ['red', 'blue']
@@ -184,9 +179,24 @@ class ClickerGame(Widget):
             self.enemy_type['yellow']['Tmax'] = 35.6
             self.fade_factor = 0.4 / 3
 
-
     def on_phase(self, instance, value):
         self.load_phase()
+
+    def will_spawn(self,enemy_type):
+        if enemy_type['Timer'] > enemy_type['Tmin']:
+            print("OK1")
+            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
+            r=random()
+            if r<f:
+                print("OK2")
+                if enemy_type['Class'] == "Enemy":
+                    self.spawn_enemy(enemy_type['Type'], center = None)
+                    print("OK3")
+                if enemy_type['Class'] == "Cannonball":
+                    self.spawn_cannon()
+                    print("OK4")
+                enemy_type['Timer'] = 0
+                enemy_type ['Counter'] = 0
 
     def update_enemy(self):
         for enemy in self.children:
@@ -194,9 +204,15 @@ class ClickerGame(Widget):
                 enemy.move()
                 self.cell.collide(enemy, self)
                 self.bounce(enemy)
+            if enemy.__class__.__name__ == "Cannonball":
+                enemy.move()
+                self.cell.collide(enemy, self)
         for key in self.spawn_list:
             self.enemy_type[key]['Counter'] += 1
             self.will_spawn(self.enemy_type[key])
+
+
+
 
     def update_cell(self):
         self.fade()

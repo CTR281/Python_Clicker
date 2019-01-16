@@ -12,11 +12,16 @@ class Cannonball(Widget):
 
         super(Cannonball, self).__init__(**kwargs)
 
-        self.velocity_x = randint(3,7)
         self.x_min = x_min
         self.x_max = x_max
         self.Y_max = Y_max
         self.pos = x_min, 0
+        if self.x_min == 5:
+            self.side = 1
+        else:
+            self.side = -1
+        self.velocity_x = randint(3, 6)*self.side
+
         #self.x_min = randint(5,50)
         #self.x_max = randint(400,550)
         #self.Y_max = randint (400,600)

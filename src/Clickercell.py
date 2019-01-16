@@ -46,5 +46,8 @@ class ClickerCell(Widget):
                     game.kill_enemy(enemy, 0)
                 Clock.schedule_once(switch, self.invulnerable)
 
+    def move(self,direction):
+        self.pos[0] += 1*direction
+
     def on_invulnerable(self, instance, value):
         pass

@@ -2,6 +2,7 @@ from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.animation import Animation
 from kivy.uix.image import Image
+from kivy.core.window import Window
 from kivy.vector import Vector
 from random import randint, choice, random
 from math import isclose
@@ -62,6 +63,8 @@ class ClickerGame(Widget):
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
     def add_gold(self,amount):
         self.gold += amount
@@ -119,6 +122,24 @@ class ClickerGame(Widget):
             self.add_gold(enemy.max)
         self.remove_widget(enemy)
 
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'q' and self.cell.pos[0] > 0:
+            self.cell.center_x -= 15
+        elif keycode[1] == 'd' and self.cell.pos[0] + self.cell.size[0] < self.width * self.limit_x:
+            self.cell.center_x += 15
+        return True
+
+   # def on_key_down(self, key):
+   #     if key == 'right':
+   #         print("OK")
+   #         self.cell.move(1)
+   #     if key == 'left':
+   #         self.cell.move(-1)
+
     def on_touch_down(self, touch):
         for child in self.children:
             if child.__class__.__name__ == "Enemy":
@@ -129,7 +150,7 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def spawn_cannon(self):
-        self.add_widget(Cannonball(self.width*1/8,self.cell.pos[0], randint(400,600)))
+        self.add_widget(Cannonball(choice([5,545]),self.cell.pos[0], randint(400,600)))
 
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
@@ -204,12 +225,11 @@ class ClickerGame(Widget):
             if enemy.__class__.__name__ == "Cannonball":
                 enemy.move()
                 self.cell.collide(enemy, self)
+                if enemy.pos[1] < 0:
+                    self.remove_widget(enemy)
         for key in self.spawn_list:
             self.enemy_type[key]['Counter'] += 1
             self.will_spawn(self.enemy_type[key])
-
-
-
 
     def update_cell(self):
         self.fade()

@@ -37,8 +37,12 @@ class ClickerCell(Widget):
             if self.collide_widget(enemy):
                 self.invulnerable = 1
                 self.color, self.color2= 0, 0.8
-                game.add_weight(-enemy.max)
-                if enemy.type != 'blue':
+                if enemy.__class__.__name__ == "Enemy":
+                    game.add_weight(-enemy.max)
+                    if enemy.type != 'blue':
+                        game.kill_enemy(enemy, 0)
+                if enemy.__class__.__name__ == "Cannonball":
+                    game.add_weight(-enemy.damage)
                     game.kill_enemy(enemy, 0)
                 Clock.schedule_once(switch, self.invulnerable)
 

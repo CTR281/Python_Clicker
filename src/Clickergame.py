@@ -109,11 +109,12 @@ class ClickerGame(Widget):
             return
 
     def kill_enemy(self, enemy, killed):
-        if enemy.type == 'yellow':
-            center = enemy.center
-            self.spawn_enemy('red', center)
-            self.spawn_enemy('red',center)
-            self.spawn_enemy('red',center)
+        if enemy.__class__.__name__ == "Enemy":
+            if enemy.type == 'yellow':
+                center = enemy.center
+                self.spawn_enemy('red', center)
+                self.spawn_enemy('red',center)
+                self.spawn_enemy('red',center)
         if killed == 1:
             self.add_gold(enemy.max)
         self.remove_widget(enemy)
@@ -128,7 +129,7 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def spawn_cannon(self):
-        self.add_widget(Cannonball())
+        self.add_widget(Cannonball(self.width*1/8,self.cell.pos[0], randint(400,600)))
 
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
@@ -184,17 +185,13 @@ class ClickerGame(Widget):
 
     def will_spawn(self,enemy_type):
         if enemy_type['Timer'] > enemy_type['Tmin']:
-            print("OK1")
             f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
             r=random()
             if r<f:
-                print("OK2")
                 if enemy_type['Class'] == "Enemy":
                     self.spawn_enemy(enemy_type['Type'], center = None)
-                    print("OK3")
                 if enemy_type['Class'] == "Cannonball":
                     self.spawn_cannon()
-                    print("OK4")
                 enemy_type['Timer'] = 0
                 enemy_type ['Counter'] = 0
 

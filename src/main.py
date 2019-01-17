@@ -21,7 +21,7 @@ from Clickergame import ClickerGame
 class ClickerApp(App):
     def build(self):
         self.game = ClickerGame()
-        Clock.schedule_interval(self.game.update, 1 / 30)
+        Clock.schedule_interval(self.game.update, 1 / 60)
         return self.game
 
 

@@ -11,7 +11,7 @@ from Enemy import Enemy
 from Autoclicker import AutoClicker
 from Clickercell import ClickerCell
 from Treasure import Treasure
-from Cannonball import Cannonball
+from Cannon import Cannon, Cannonball
 
 
 class ClickerGame(Widget):
@@ -150,7 +150,7 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def spawn_cannon(self):
-        self.add_widget(Cannonball(choice([5,545]),self.cell.pos[0], randint(400,600)))
+        self.add_widget(Cannonball(545 if self.cell.pos[0] < self.width*3/8 else 5,self.cell.pos[0], randint(400,600)))
 
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
@@ -165,13 +165,13 @@ class ClickerGame(Widget):
 
     def update_time(self):
         self.counter += 1
-        if self.counter % 30 == 0:
+        if self.counter % 60 == 0:
             self.timer +=1
             for key in self.enemy_type.keys():
                 self.enemy_type[key]['Timer'] += 1
 
     def update_phase(self):
-        if self.timer % 60 == 0 and self.counter % 30 == 0:
+        if self.timer % 60 == 0 and self.counter % 60 == 0:
             self.phase += 1
 
     def load_phase(self):   #update Tmin, Tmax, spawn_list, fade_factor,
@@ -206,7 +206,7 @@ class ClickerGame(Widget):
 
     def will_spawn(self,enemy_type):
         if enemy_type['Timer'] > enemy_type['Tmin']:
-            f=(enemy_type['Counter']/(30*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
+            f=(enemy_type['Counter']/(60*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
             r=random()
             if r<f:
                 if enemy_type['Class'] == "Enemy":
@@ -233,7 +233,7 @@ class ClickerGame(Widget):
 
     def update_cell(self):
         self.fade()
-        if self.counter % 30 == 0:
+        if self.counter % 60 == 0:
             self.autofeed()
 
     def update(self, dt):
@@ -248,7 +248,7 @@ class ClickerGame(Widget):
     #    for key in self.enemy_type.keys():
     #        self.enemy_type[key]['Counter']+=1
     #        self.will_spawn(self.enemy_type[key])
-       # if self.count % 30 == 0:
+       # if self.count % 60 == 0:
        #     self.timer += 1
       #      for key in self.enemy_type.keys():
       #          self.enemy_type[key]['Timer'] += 1

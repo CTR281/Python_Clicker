@@ -1,5 +1,6 @@
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, ReferenceListProperty
+from kivy.uix.image import Image
 from random import randint
 
 class Cannonball(Widget):
@@ -20,7 +21,7 @@ class Cannonball(Widget):
             self.side = 1
         else:
             self.side = -1
-        self.velocity_x = randint(3, 6)*self.side
+        self.velocity_x = 3*self.side
 
         #self.x_min = randint(5,50)
         #self.x_max = randint(400,550)
@@ -30,4 +31,6 @@ class Cannonball(Widget):
         self.pos[0] += self.velocity_x
         self.pos[1] = ((-4*(self.Y_max))/(self.x_max-self.x_min)**2)*(self.pos[0]-self.x_min)*(self.pos[0]-self.x_max)
 
-        
+class Cannon(Image):
+
+

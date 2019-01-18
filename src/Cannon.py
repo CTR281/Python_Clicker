@@ -18,7 +18,7 @@ class Cannonball(Widget):
         self.Y_max = Y_max
         self.Y_min =Y_min
         self.pos = x_min, Y_min
-        if self.x_min == 5:
+        if self.x_min < 400:
             self.side = 1
         else:
             self.side = -1
@@ -43,9 +43,9 @@ class Cannon(Widget):
     def aim(self, game):
         if game.cell.pos[0] < game.width * 2/8:
             if self.type == 'right_cannon':
-                self.source = '../graphics/Cannon/Cannon_3_right.png'
+                self.source = '../graphics/Cannon/Cannon_1_right.png'
             else:
-                self.source = '../graphics/Cannon/Cannon_1_left.png'
+                self.source = '../graphics/Cannon/Cannon_3_left.png'
 
         if game.width * 2/8 <= game.cell.pos[0] < game.width * 4/8:
             if self.type == 'right_cannon':
@@ -55,15 +55,16 @@ class Cannon(Widget):
 
         if  game.width * 4/8 <= game.cell.pos[0] <= game.width * 6/8:
             if self.type == 'right_cannon':
-                self.source = '../graphics/Cannon/Cannon_1_right.png'
+                self.source = '../graphics/Cannon/Cannon_3_right.png'
             else:
-                self.source = '../graphics/Cannon/Cannon_3_left.png'
+                self.source = '../graphics/Cannon/Cannon_1_left.png'
 
+    def fire(self, game):
         if self.type == 'right_cannon':
-            self.firing_point_x = 545
+            self.firing_point_x = 545 - self.size[0]
             self.firing_point_y = game.height * 1 / 8 + 5 + self.size[0]
         if self.type == 'left_cannon':
-            self.firing_point_x = 5
+            self.firing_point_x = self.size[0]
             self.firing_point_y = game.height * 1 / 8 + 5 + self.size[0]
 
 

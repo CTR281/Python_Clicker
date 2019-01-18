@@ -159,9 +159,9 @@ class ClickerGame(Widget):
             else:
                 child.on_touch_down(touch)
 
-    def spawn_cannon(self):
-        self.right_cannon.aim(self)
-        self.left_cannon.aim(self)
+    def spawn_cannonball(self):
+        self.right_cannon.fire(self)
+        self.left_cannon.fire(self)
         self.add_widget(Cannonball(self.cannon_shoot().firing_point_x, self.cell.pos[0], randint(400,600), self.cannon_shoot().firing_point_y))
 
     def spawn_enemy(self,type, center):
@@ -224,7 +224,7 @@ class ClickerGame(Widget):
                 if enemy_type['Class'] == "Enemy":
                     self.spawn_enemy(enemy_type['Type'], center = None)
                 if enemy_type['Class'] == "Cannonball":
-                    self.spawn_cannon()
+                    self.spawn_cannonball()
                 enemy_type['Timer'] = 0
                 enemy_type ['Counter'] = 0
 

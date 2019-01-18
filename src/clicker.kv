@@ -1,3 +1,13 @@
+<Cannon>:
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        Rectangle:
+            pos: self.pos
+            size: 125,75
+            source:self.source
+
+
 <Cannonball>:
     canvas:
         Color:
@@ -68,6 +78,8 @@
     health : health
     tresor: tresor
     feed: feed_button
+    right_cannon: right_cannon
+    left_cannon: left_cannon
     auto_tier1: tier1
     auto_tier2: tier2
 
@@ -104,6 +116,18 @@
     Treasure:
         id: tresor
         pos:root.width*3/8-50,root.height*5/8+25+10+75
+
+    Cannon:
+        id: right_cannon
+        type: "right_cannon"
+        pos:0 , root.height *1/8 + 5
+        source: '../graphics/Cannon/cannon_1_right.png'
+
+    Cannon:
+        id : left_cannon
+        type: "left_cannon"
+        pos:root.width*5/8-15, root.height *1/8 + 5
+        source: '../graphics/Cannon/cannon_1_right.png'
 
 
     ClickerCell:

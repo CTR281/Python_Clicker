@@ -17,6 +17,8 @@ from Cannon import Cannon, Cannonball
 class ClickerGame(Widget):
 
     cell = ObjectProperty(None)
+    right_cannon = ObjectProperty(None)
+    left_cannon = ObjectProperty(None)
 
     feed = ObjectProperty(None)
     feedpower = NumericProperty(1)
@@ -95,6 +97,12 @@ class ClickerGame(Widget):
         else:
             print("Not Enought weight")
 
+    def cannon_shoot(self):
+        if self.cell.pos[0] < self.width * 3 / 8:
+            return self.right_cannon
+        else:
+            return self.left_cannon
+
     def fade(self):
         self.add_weight(-self.fade_factor)
 
@@ -150,7 +158,9 @@ class ClickerGame(Widget):
                 child.on_touch_down(touch)
 
     def spawn_cannon(self):
-        self.add_widget(Cannonball(545 if self.cell.pos[0] < self.width*3/8 else 5,self.cell.pos[0], randint(400,600)))
+        self.right_cannon.aim(self)
+        self.left_cannon.aim(self)
+        self.add_widget(Cannonball(self.cannon_shoot().firing_point_x, self.cell.pos[0], randint(400,600), self.cannon_shoot().firing_point_y))
 
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))

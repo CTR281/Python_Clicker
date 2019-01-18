@@ -120,14 +120,14 @@
     Cannon:
         id: right_cannon
         type: "right_cannon"
-        pos:0 , root.height *1/8 + 5
-        source: '../graphics/Cannon/cannon_1_right.png'
+        pos:root.width*5/8-15 , root.height *1/8 + 5
+        source: self.source
 
     Cannon:
         id : left_cannon
         type: "left_cannon"
-        pos:root.width*5/8-15, root.height *1/8 + 5
-        source: '../graphics/Cannon/cannon_1_right.png'
+        pos:-10, root.height *1/8 + 5
+        source: self.source
 
 
     ClickerCell:

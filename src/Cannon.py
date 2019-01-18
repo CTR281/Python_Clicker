@@ -33,13 +33,32 @@ class Cannonball(Widget):
         self.pos[1] = ((-4*(self.Y_max))/(self.x_max-self.x_min)**2)*(self.pos[0]-self.x_min)*(self.pos[0]-self.x_max)+self.Y_min
 
 class Cannon(Widget):
+
     source = StringProperty()
     firing_point_x = NumericProperty(0)
     firing_point_y = NumericProperty(0)
     firing_point = ReferenceListProperty(firing_point_x, firing_point_y)
-    type = StringProperty('')
+    type = StringProperty()
 
     def aim(self, game):
+        if game.cell.pos[0] < game.width * 2/8:
+            if self.type == 'right_cannon':
+                self.source = '../graphics/Cannon/Cannon_3_right.png'
+            else:
+                self.source = '../graphics/Cannon/Cannon_1_left.png'
+
+        if game.width * 2/8 <= game.cell.pos[0] < game.width * 4/8:
+            if self.type == 'right_cannon':
+                self.source = '../graphics/Cannon/Cannon_2_right.png'
+            else:
+                self.source = '../graphics/Cannon/Cannon_2_left.png'
+
+        if  game.width * 4/8 <= game.cell.pos[0] <= game.width * 6/8:
+            if self.type == 'right_cannon':
+                self.source = '../graphics/Cannon/Cannon_1_right.png'
+            else:
+                self.source = '../graphics/Cannon/Cannon_3_left.png'
+
         if self.type == 'right_cannon':
             self.firing_point_x = 545
             self.firing_point_y = game.height * 1 / 8 + 5 + self.size[0]

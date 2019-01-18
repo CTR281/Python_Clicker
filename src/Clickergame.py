@@ -135,6 +135,8 @@ class ClickerGame(Widget):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        self.right_cannon.aim(self)
+        self.left_cannon.aim(self)
         if keycode[1] == 'q' and self.cell.pos[0] > 0:
             self.cell.center_x -= 15
         elif keycode[1] == 'd' and self.cell.pos[0] + self.cell.size[0] < self.width * self.limit_x:

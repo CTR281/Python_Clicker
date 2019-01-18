@@ -18,11 +18,11 @@ class Cannonball(Widget):
         self.Y_max = Y_max
         self.Y_min =Y_min
         self.pos = x_min, Y_min
-        if self.x_min < 400:
-            self.side = 1
-        else:
-            self.side = -1
-        self.velocity_x = 3*self.side
+      #  if self.x_min < 400:
+      #      self.side = 1
+      #  else:
+      #      self.side = -1
+        self.velocity_x = (x_max-x_min)/(4*30)#self.side
 
         #self.x_min = randint(5,50)
         #self.x_max = randint(400,550)

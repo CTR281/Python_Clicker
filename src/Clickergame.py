@@ -3,7 +3,9 @@ from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.animation import Animation
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from kivy.clock import Clock
 from kivy.vector import Vector
+from functools import partial
 from random import randint, choice, random
 from math import isclose
 
@@ -12,7 +14,7 @@ from Autoclicker import AutoClicker
 from Clickercell import ClickerCell
 from Treasure import Treasure
 from Cannon import Cannon, Cannonball
-
+from Falling_spike import Falling_spike
 
 class ClickerGame(Widget):
 
@@ -49,7 +51,10 @@ class ClickerGame(Widget):
     enemy_blue={"Class":"Enemy","Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
     enemy_yellow={"Class":"Enemy","Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
     cannon = {"Class":"Cannonball","Type":'cannon',"Tmin":1, "Tmax":10.6, "Timer":0, "Counter":0}
-    enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow,'cannon': cannon}
+    falling_spike = {"Class":"Falling_spike","Type":'spike',"Tmin":1, "Tmax":10.6, "Timer":0, "Counter":0}
+
+    enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow,'cannon': cannon, 'spike': falling_spike}
+
 
     spawn_list = ['red']
 
@@ -65,6 +70,8 @@ class ClickerGame(Widget):
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 
+        self.spike_pos_autorise = [100, 200, 300, 400]#[(self.width * 6 / 8)/10 * k for k in range(int((self.width * 6 / 8)/10))]
+        print(self.spike_pos_autorise)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
@@ -76,7 +83,7 @@ class ClickerGame(Widget):
         if self.cell.cell_weight < 100:
             self.cell.center = self.cell.center_x - amount / 2, 25+30+self.height * 1 / 8+ (self.cell.cell_weight/100)*self.height*4/8
             self.health.color = [1,1,1,1]
-        if self.cell.cell_weight == 100:
+        if self.cell.cell_weight == 100 and self.tresor.center_x - 50 < self.cell.center_x < self.tresor.center_x + 50:
             self.health.color = [1, 0.8, 0, 1]
             self.hit_treasure(amount)
 
@@ -124,8 +131,11 @@ class ClickerGame(Widget):
             if enemy.type == 'yellow':
                 center = enemy.center
                 self.spawn_enemy('red', center)
-                self.spawn_enemy('red',center)
-                self.spawn_enemy('red',center)
+                self.spawn_enemy('red', center)
+                self.spawn_enemy('red', center)
+        if enemy.__class__.__name__ == 'Falling_spike':
+            Clock.schedule_once(partial(self.refresh_spike, enemy, enemy.pos[0]), 3)
+            self.remove_widget(enemy)
         if killed == 1:
             self.add_gold(enemy.max)
         self.remove_widget(enemy)
@@ -164,6 +174,19 @@ class ClickerGame(Widget):
         self.left_cannon.fire(self)
         self.add_widget(Cannonball(self.cannon_shoot().firing_point_x, self.cell.pos[0], randint(400,600), self.cannon_shoot().firing_point_y))
 
+    def spawn_spike(self):
+        pos = choice(self.spike_pos_autorise)
+        self.add_widget(Falling_spike(pos = pos))
+        self.spike_pos_autorise.remove(pos)
+
+    def refresh_spike(self, dt, spike, pos):
+        self.spike_pos_autorise.append(pos)
+
+    def remove_spike(self,spike):
+        if spike.pos[1]+spike.size[1] < self.height * 1 / 8 + 10:
+           Clock.schedule_once(partial(self.refresh_spike, spike, spike.pos[0]), 3)
+           self.remove_widget(spike)
+
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
 
@@ -188,7 +211,7 @@ class ClickerGame(Widget):
 
     def load_phase(self):   #update Tmin, Tmax, spawn_list, fade_factor,
         if self.phase == 1:
-            self.spawn_list = ['red', 'cannon']
+            self.spawn_list = ['red', 'cannon', 'spike']
 
         if self.phase == 2:
             self.spawn_list = ['red', 'blue']
@@ -225,6 +248,8 @@ class ClickerGame(Widget):
                     self.spawn_enemy(enemy_type['Type'], center = None)
                 if enemy_type['Class'] == "Cannonball":
                     self.spawn_cannonball()
+                if enemy_type['Class'] == "Falling_spike":
+                    self.spawn_spike()
                 enemy_type['Timer'] = 0
                 enemy_type ['Counter'] = 0
 
@@ -237,8 +262,12 @@ class ClickerGame(Widget):
             if enemy.__class__.__name__ == "Cannonball":
                 enemy.move()
                 self.cell.collide(enemy, self)
-                if enemy.pos[1] < 0:
+                if enemy.pos[1] < self.height * 1/8 - 10:
                     self.remove_widget(enemy)
+            if enemy.__class__.__name__ == "Falling_spike":
+                enemy.move()
+                self.cell.collide(enemy, self)
+                self.remove_spike(enemy)
         for key in self.spawn_list:
             self.enemy_type[key]['Counter'] += 1
             self.will_spawn(self.enemy_type[key])
@@ -254,6 +283,7 @@ class ClickerGame(Widget):
         self.update_enemy()
         self.update_cell()
         self.update_time()
+
 
     #    self.count += 1
     #    self.fade()

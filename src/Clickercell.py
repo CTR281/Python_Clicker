@@ -41,13 +41,11 @@ class ClickerCell(Widget):
                     game.add_weight(-enemy.max)
                     if enemy.type != 'blue':
                         game.kill_enemy(enemy, 0)
-                if enemy.__class__.__name__ == "Cannonball":
+                if enemy.__class__.__name__ == "Cannonball" or enemy.__class__.__name__ == "Falling_spike":
                     game.add_weight(-enemy.damage)
                     game.kill_enemy(enemy, 0)
                 Clock.schedule_once(switch, self.invulnerable)
 
-   # def move(self,direction):
-   #     self.pos[0] += 1*direction
 
     def on_invulnerable(self, instance, value):
         pass

@@ -18,11 +18,7 @@ class Cannonball(Widget):
         self.Y_max = Y_max
         self.Y_min =Y_min
         self.pos = x_min, Y_min
-      #  if self.x_min < 400:
-      #      self.side = 1
-      #  else:
-      #      self.side = -1
-        self.velocity_x = (x_max-x_min)/(4*30)#self.side
+        self.velocity_x = (x_max-x_min)/(4*30)
 
         #self.x_min = randint(5,50)
         #self.x_max = randint(400,550)
@@ -61,7 +57,7 @@ class Cannon(Widget):
 
     def fire(self, game):
         if self.type == 'right_cannon':
-            self.firing_point_x = 545 - self.size[0]
+            self.firing_point_x = self.pos[0]
             self.firing_point_y = game.height * 1 / 8 + 5 + self.size[0]
         if self.type == 'left_cannon':
             self.firing_point_x = self.size[0]

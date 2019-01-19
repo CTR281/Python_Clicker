@@ -4,7 +4,7 @@
             rgba: 1,1,1,1
         Rectangle:
             pos: self.pos
-            size: 125,75
+            size: 95,101  #respecte les proportions du png original
             source:self.source
 
 
@@ -64,6 +64,15 @@
         color: 1, 1, 1, 1
         center: root.pos[0]+root.size[0]+10, root.pos[1] + root.size[1] + 10
 
+
+<Falling_spike>:
+    canvas:
+        Color:
+            rgba: 1,1,1,1
+        Rectangle:
+            size:50,75
+            pos : self.pos
+
 <AutoClicker>:
     Label:
         color: 1,1,1,1
@@ -121,13 +130,13 @@
     Cannon:
         id: right_cannon
         type: "right_cannon"
-        pos:root.width*5/8-20 , root.height *1/8 + 5
+        pos: root.width*6/8-self.size[0] , root.height *1/8 + 5
         source: '../graphics/Cannon/Cannon_1_right.png'
 
     Cannon:
         id : left_cannon
         type: "left_cannon"
-        pos:-5, root.height *1/8 + 5
+        pos: 0, root.height *1/8 + 5
         source: '../graphics/Cannon/Cannon_1_left.png'
 
 

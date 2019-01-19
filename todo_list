@@ -4,3 +4,4 @@ vers la nouvelle position, size soit plus douce (en utilisant Animation() et en 
 Mettre à jour les boutons (plus beaux, scène plus large, 5 boutons alignés verticalement à droite: +1+2+5(autoclicker)+1(feedpower))
 Créer menu? Ajouter textures. Sons. Arranger les phases. Equilibrer.
 -velocity_x fonction de xmax plutôt qu'un randint qui n'a pas un rendu réaliste.
+-afficher dégats, gain d'or...

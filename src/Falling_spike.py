@@ -17,6 +17,8 @@ class Falling_spike(Widget):
         self.pos = pos, 600
         self.size = 37,105
         self.velocity_y = -randint(3,6)
+        self.fallen = False
 
-    def move(self):
-        self.pos = Vector(*self.velocity) + self.pos
+    def move(self, fallen):
+        if not fallen:
+            self.pos = Vector(*self.velocity) + self.pos

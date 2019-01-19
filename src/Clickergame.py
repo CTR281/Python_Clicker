@@ -3,7 +3,7 @@ from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.animation import Animation
 from kivy.uix.image import Image
 from kivy.core.window import Window
-from kivy.clock import Clock
+from kivy.clock import Clock, ClockBaseBehavior
 from kivy.vector import Vector
 from functools import partial
 from random import randint, choice, random
@@ -70,7 +70,7 @@ class ClickerGame(Widget):
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 
-        self.spike_pos_autorise = [100, 200, 300, 400]#[(self.width * 6 / 8)/10 * k for k in range(int((self.width * 6 / 8)/10))]
+        self.spike_pos_autorise = [(16*37)*k/16 for k in range(16)]
         print(self.spike_pos_autorise)
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
@@ -134,8 +134,7 @@ class ClickerGame(Widget):
                 self.spawn_enemy('red', center)
                 self.spawn_enemy('red', center)
         if enemy.__class__.__name__ == 'Falling_spike':
-            Clock.schedule_once(partial(self.refresh_spike, enemy, enemy.pos[0]), 3)
-            self.remove_widget(enemy)
+            self.refresh_spike(enemy, enemy.pos[0])
         if killed == 1:
             self.add_gold(enemy.max)
         self.remove_widget(enemy)
@@ -179,13 +178,18 @@ class ClickerGame(Widget):
         self.add_widget(Falling_spike(pos = pos))
         self.spike_pos_autorise.remove(pos)
 
-    def refresh_spike(self, dt, spike, pos):
-        self.spike_pos_autorise.append(pos)
+    def refresh_spike(self, spike, pos, *args):
+        if pos not in self.spike_pos_autorise:
+            self.spike_pos_autorise.append(pos)
+        self.remove_widget(spike)
+        return False
 
     def remove_spike(self,spike):
-        if spike.pos[1]+spike.size[1] < self.height * 1 / 8 + 10:
-           Clock.schedule_once(partial(self.refresh_spike, spike, spike.pos[0]), 3)
-           self.remove_widget(spike)
+        if spike.pos[1] < self.height * 1 / 8 + 10:
+            spike.pos[1]+=5
+            Clock.schedule_once(partial(self.refresh_spike, spike, spike.pos[0]), 5)
+            spike.fallen = True
+
 
     def spawn_enemy(self,type, center):
         self.add_widget(Enemy(type, center = center))
@@ -265,7 +269,7 @@ class ClickerGame(Widget):
                 if enemy.pos[1] < self.height * 1/8 - 10:
                     self.remove_widget(enemy)
             if enemy.__class__.__name__ == "Falling_spike":
-                enemy.move()
+                enemy.move(enemy.fallen)
                 self.cell.collide(enemy, self)
                 self.remove_spike(enemy)
         for key in self.spawn_list:
@@ -283,6 +287,8 @@ class ClickerGame(Widget):
         self.update_enemy()
         self.update_cell()
         self.update_time()
+        print(self.spike_pos_autorise)
+
 
 
     #    self.count += 1

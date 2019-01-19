@@ -5,16 +5,16 @@
         Rectangle:
             pos: self.pos
             size: 95,101  #respecte les proportions du png original
-            source:self.source
+            source: self.source
 
 
 <Cannonball>:
     canvas:
         Color:
             rgba: 1,1,1,1
-        Ellipse:
+        Rectangle:
             pos: self.pos
-            size: 50, 50
+            size: self.size
             source: '../graphics/cannon/cannonball.png'
 
 
@@ -22,10 +22,10 @@
     canvas:
         Color:
             rgba: 1,self.color,self.color,self.color2
-        Ellipse:
+        Rectangle:
             pos: self.pos
             size: self.size
-            source: '../Graphics/Aventurer.png'
+            #source: '../Graphics/Aventurer_2.png'
 
 
 <Treasure>:
@@ -33,7 +33,7 @@
         Color:
             rgba: 1,1,1,1
         Rectangle:
-            pos:self.pos
+            pos: self.pos
             size: 100,70
             source: '../Graphics/treasure.png'
 
@@ -45,20 +45,20 @@
         Color:
             rgba: self.color
         Ellipse:
-            pos:self.pos
-            size:self.size
+            pos: self.pos
+            size: self.size
             #source: '../Graphics/bat.gif'
 
         Color:
             rgba: 1, 0, 0, 1
         Rectangle:
-            pos:root.pos[0]+root.size[0]+8, root.pos[1]
-            size:5, root.size[1]
+            pos: root.pos[0]+root.size[0]+8, root.pos[1]
+            size: 5, root.size[1]
         Color:
             rgba: 0,1,0,1
         Rectangle:
-            pos:root.pos[0]+root.size[0]+8, root.pos[1]
-            size:5, root.pv
+            pos: root.pos[0]+root.size[0]+8, root.pos[1]
+            size: 5, root.pv
     Label:
         text: "%d/%d" % (root.enemy_weight,root.max)
         color: 1, 1, 1, 1
@@ -70,16 +70,17 @@
         Color:
             rgba: 1,1,1,1
         Rectangle:
-            size:50,75
+            size: self.size
             pos : self.pos
+            #source: '../graphics/Falling_spike.png'
 
 <AutoClicker>:
     Label:
         color: 1,1,1,1
-        text:"Autofeed Tier"+str(root.tier)
+        text: "Autofeed Tier"+str(root.tier)
         font_size: "20"
-        pos:root.pos
-        center:root.center
+        pos: root.pos
+        center: root.center
 
 
 
@@ -99,13 +100,13 @@
             rgba: 1,1,1,1
         Rectangle:
             size: root.size
-            pos:root.pos
+            pos: root.pos
         Color:
             rgb: 1, 1, 1, 1
         Rectangle:
             id: background
-            size:root.size[0]* 3/4, root.size[1] * 7/8
-            pos:0, root.size[1] * 1/8
+            size: root.size[0]* 3/4, root.size[1] * 7/8
+            pos: 0, root.size[1] * 1/8
             texture: root.dirt
         Rectangle:
             id: spikes
@@ -125,7 +126,7 @@
 
     Treasure:
         id: tresor
-        pos:root.width*3/8-50,root.height*5/8+25+10+75
+        pos: root.width*3/8-50,root.height*5/8+25+10+75
 
     Cannon:
         id: right_cannon
@@ -159,19 +160,19 @@
                 id: plateforme_horizontale
                 size: root.width * root.limit_x - 20, 20
                 pos: 10, self.top - self.size[1] -20#root.width*root.limit_x*0.5-5-45, self.top-self.size[1]
-                texture:root.bridge
+                texture: root.bridge
             Color:
                 rgba: 1,0,0,1
             Rectangle:
-                id:jauge
-                pos:70, root.height-30
+                id: jauge
+                pos: 70, root.height-30
                 size: root.width*root.limit_x*4/5+40, 20
             Color:
                 rgba: 0,1,0,1
             Rectangle:
-                id:jauge verte
-                pos:70, root.height-30
-                size:self.jauge_pv*(self.cell_weight/100), 20
+                id: jauge verte
+                pos: 70, root.height-30
+                size: self.jauge_pv*(self.cell_weight/100), 20
             Color:
                 rgba: 1,1,1,1
             Rectangle:
@@ -185,28 +186,28 @@
             Rectangle:
                 pos: 23, self.pos[1]
                 size: 36*1.5, root.height - 155 - self.pos[1]
-                source:"../Graphics/Rope.png"
+                source: "../Graphics/Rope.png"
             Rectangle:
                 pos: root.width * root.limit_x - 27 - 36*1.5, self.pos[1]
                 size: 36*1.5, root.height - 155 - self.pos[1]
-                source:"../Graphics/Rope.png"
+                source: "../Graphics/Rope.png"
 
     Label:
-        text:"Gold:%d" % root.gold
-        font_size:"40"
+        text: "Gold:%d" % root.gold
+        font_size: "40"
         size: 200, 40
         text_size: self.size
-        center_x:0+self.size[0]/2
+        center_x: 0+self.size[0]/2
         color: 1,0.9,0,1
         top: root.height - 50
 
     Button:
         id: feed_button
-        name:"feed_button"
+        name: "feed_button"
         background_color: 0,1,0,1
-        text:"Push!"
+        text: "Push!"
         font_size: 20
-        size:root.width * 3 / 8, root.height * 1 / 8
+        size: root.width * 3 / 8, root.height * 1 / 8
         on_press: root.add_weight(root.feedpower)
 
     Button:
@@ -215,15 +216,15 @@
         text: "     +1 \n\n Cost:" + str(root.feedpower_upgrade_cost)
         font_size: "15"
         on_press: root.upgrade_feedpower()
-        size:root.width * 3/8, root.height * 1/8
+        size: root.width * 3/8, root.height * 1/8
         pos: root.width * 3/8, 0
 
     Label:
-        id:health
-        text:"%d/%d" % (clicker_cell.cell_weight, 100)
-        font_size:"20"
-        center_y:root.height-30-10
-        center_x:root.width*root.limit_x*4/5+80
+        id: health
+        text: "%d/%d" % (clicker_cell.cell_weight, 100)
+        font_size: "20"
+        center_y: root.height-30-10
+        center_x: root.width*root.limit_x*4/5+80
         color: 1, 1, 1, 1
 
     Label:
@@ -237,13 +238,13 @@
         text: "Stage: %d" % root.phase
         font_size: "40"
         top: root.height - 15
-        center_x:root.width*6/8 - 80
+        center_x: root.width*6/8 - 80
         color: 1, 0.5, 0, 1
 
     Label:
-        text:str(root.gameover)
-        font_size:"70"
-        color:0,0,0,1
+        text: str(root.gameover)
+        font_size: "70"
+        color: 0,0,0,1
         center: root.width * 3 / 8, root.height * 5 / 8
 
 

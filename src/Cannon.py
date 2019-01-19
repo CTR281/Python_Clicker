@@ -19,6 +19,7 @@ class Cannonball(Widget):
         self.Y_min =Y_min
         self.pos = x_min, Y_min
         self.velocity_x = (x_max-x_min)/(4*30)
+        self.size = 50,50
 
         #self.x_min = randint(5,50)
         #self.x_max = randint(400,550)

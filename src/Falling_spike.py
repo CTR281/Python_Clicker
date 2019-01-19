@@ -15,6 +15,7 @@ class Falling_spike(Widget):
         super(Falling_spike, self).__init__(**kwargs)
 
         self.pos = pos, 600
+        self.size = 37,105
         self.velocity_y = -randint(3,6)
 
     def move(self):

@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, ObjectProperty, StringProperty
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty, ObservableList
 from kivy.animation import Animation
 from kivy.uix.image import Image
 from kivy.core.window import Window
@@ -70,8 +70,7 @@ class ClickerGame(Widget):
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
 
-        self.spike_pos_autorise = [(16*37)*k/16 for k in range(16)]
-        print(self.spike_pos_autorise)
+        self.spike_pos_autorise = [(16*36)*k/16 for k in range(17)]
         self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
@@ -243,7 +242,7 @@ class ClickerGame(Widget):
     def on_phase(self, instance, value):
         self.load_phase()
 
-    def will_spawn(self,enemy_type):
+    def will_spawn(self,enemy_type):  #Espérance: <t>=Tmin + 0.7*(Tmax-Tmin)**(5/6)
         if enemy_type['Timer'] > enemy_type['Tmin']:
             f=(enemy_type['Counter']/(60*(enemy_type['Tmax']-enemy_type['Tmin'])))**5
             r=random()
@@ -287,7 +286,8 @@ class ClickerGame(Widget):
         self.update_enemy()
         self.update_cell()
         self.update_time()
-        print(self.spike_pos_autorise)
+
+
 
 
 

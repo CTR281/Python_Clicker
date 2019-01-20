@@ -105,13 +105,13 @@
             rgb: 1, 1, 1, 1
         Rectangle:
             id: background
-            size: root.size[0]* 3/4, root.size[1] * 7/8
-            pos: 0, root.size[1] * 1/8
+            size: root.size[0]* root.limit_x, root.size[1] * 7/8
+            pos: 0, root.height * root.limit_y
             texture: root.dirt
         Rectangle:
             id: spikes
-            size: root.width * 3/4, root.height * 1/12
-            pos: root.pos[0], root.height * 1/8
+            size: root.width * root.limit_x, root.height * 1/12
+            pos: root.pos[0], root.height * root.limit_y
             texture: root.spikes
         Color:
             rgba: 0,0,0,1
@@ -131,13 +131,13 @@
     Cannon:
         id: right_cannon
         type: "right_cannon"
-        pos: root.width*6/8-self.size[0] , root.height *1/8 + 5
+        pos: root.width*root.limit_x-self.size[0] , root.height *root.limit_y + 5
         source: '../graphics/Cannon/Cannon_1_right.png'
 
     Cannon:
         id : left_cannon
         type: "left_cannon"
-        pos: 0, root.height *1/8 + 5
+        pos: 0, root.height *root.limit_y + 5
         source: '../graphics/Cannon/Cannon_1_left.png'
 
 
@@ -216,7 +216,7 @@
         text: "     +1 \n\n Cost:" + str(root.feedpower_upgrade_cost)
         font_size: "15"
         on_press: root.upgrade_feedpower()
-        size: root.width * 3/8, root.height * 1/8
+        size: root.width * 3/8, root.height * root.limit_y
         pos: root.width * 3/8, 0
 
     Label:
@@ -238,7 +238,7 @@
         text: "Stage: %d" % root.phase
         font_size: "40"
         top: root.height - 15
-        center_x: root.width*6/8 - 80
+        center_x: root.width*root.limit_x - 80
         color: 1, 0.5, 0, 1
 
     Label:
@@ -276,7 +276,7 @@
         text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier1)
-        pos: root.width*6/8+10, root.height*1/2
+        pos: root.width*root.limit_x+10, root.height*1/2
         size: root.width*2/8-10,root.height*1/2-upgrade.font_size
 
     AutoClicker:
@@ -294,7 +294,7 @@
         text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
         font_size: 20
         on_press: root.buy_auto(root.auto_tier2)
-        pos:root.width*6/8+10,0
+        pos:root.width*root.limit_x+10,0
         size:root.width*2/8-10,root.height*1/2
 
     AutoClicker:
@@ -310,4 +310,4 @@
    #     font_size:"30"
    #     color:0.5,0,1,1
    #     center_x:55
-# center_y:root.height*1/4 +55
+   # center_y:root.height*1/4 +55

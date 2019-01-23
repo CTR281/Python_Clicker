@@ -47,7 +47,7 @@
         Ellipse:
             pos: self.pos
             size: self.size
-            #source: '../Graphics/bat.gif'
+            source: '../Graphics/Crane.png'
 
         Color:
             rgba: 1, 0, 0, 1
@@ -74,15 +74,21 @@
             pos : self.pos
             source: '../graphics/Falling_spike.png'
 
-<AutoClicker>:
+#<AutoClicker>:
+#    Label:
+#        color: 1,1,1,1
+ #       text: "Autofeed Tier"+str(root.tier)
+ #       font_size: "20"
+ #       pos: root.pos
+ #       center: root.center
+
+<ResetDecay>:
     Label:
-        color: 1,1,1,1
-        text: "Autofeed Tier"+str(root.tier)
-        font_size: "20"
+        color: 0,0,1,1
+        text: "Slow down!"
+        font_size: "30"
         pos: root.pos
         center: root.center
-
-
 
 <ClickerGame>:
     cell : clicker_cell
@@ -91,8 +97,9 @@
     feed: feed_button
     right_cannon: right_cannon
     left_cannon: left_cannon
-    auto_tier1: tier1
-    auto_tier2: tier2
+    #auto_tier1: tier1
+    #auto_tier2: tier2
+    resetdecay: resetbutton
 
 
 
@@ -106,7 +113,7 @@
             rgb: 1, 1, 1, 1
         Rectangle:
             id: background
-            size: root.size[0]* root.limit_x, root.size[1] * 7/8
+            size: self.size
             pos: 0, root.height * root.limit_y
             texture: root.dirt
         Rectangle:
@@ -239,17 +246,17 @@
         background_color: 0,1,0,1
         text: "Push!"
         font_size: 20
-        size: root.width * 3 / 8, root.height * 1 / 8
+        size: root.width * root.limit_x, root.height * root.limit_y
         on_press: root.add_weight(root.feedpower)
 
     Button:
         id: upgrade_feedpower
         name: "upgrade_feedpower"
-        text: "     +1 \n\n Cost:" + str(root.feedpower_upgrade_cost)
+        text: "\n\n Makes you"+ "\n push harder"+"\n\n   Cost:" + str(root.feedpower_upgrade_cost)
         font_size: "15"
         on_press: root.upgrade_feedpower()
-        size: root.width * 3/8, root.height * root.limit_y
-        pos: root.width * 3/8, 0
+        size: root.width*2/8-10,root.height*1/2
+        pos: root.width*root.limit_x+10, 0 #root.width * 3/8, 0
 
     Label:
         id: health
@@ -301,41 +308,57 @@
         color:1,0,0,1
         center: root.width*7/8, root.height-20
 
+    #Button:
+    #    id: buy_tier1
+    #    name: "buy_tier1"
+    #    background_color: 1,0,1,1
+    #    text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
+    #    font_size: 20
+    #    on_press: root.buy_auto(root.auto_tier1)
+    #    pos: root.width*root.limit_x+10, root.height*1/2
+    #    size: root.width*2/8-10,root.height*1/2-upgrade.font_size
+
     Button:
-        id: buy_tier1
-        name: "buy_tier1"
-        background_color: 1,0,1,1
-        text:"+"+str(tier1.feed_per_second)+" : " + str(root.auto_tier1.buy_cost)
-        font_size: 20
-        on_press: root.buy_auto(root.auto_tier1)
+        id: buy_reset
+        text: "\n\n\n Cost:%d" % resetbutton.buy_cost
+        background_color: 0,1,1,1
         pos: root.width*root.limit_x+10, root.height*1/2
         size: root.width*2/8-10,root.height*1/2-upgrade.font_size
+        on_press: root.buy_resetdecay(root.resetdecay)
 
-    AutoClicker:
-        id: tier1
-        tier : "1"
-        text:"Autofeed Tier " + root.auto_tier1.tier
-        buy_cost: 20
-        feed_per_second:1
-        center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
+    ResetDecay:
+        id: resetbutton
+        buy_cost: 100
+        text:"Slow down!"
+        font_size: "40"
+        color: 0,0,1,1
+        center: buy_reset.center_x, buy_reset.center_y
 
-    Button:
-        id: buy_tier2
-        name:"buy_tier2"
-        background_color: 1,1,0,1
-        text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
-        font_size: 20
-        on_press: root.buy_auto(root.auto_tier2)
-        pos:root.width*root.limit_x+10,0
-        size:root.width*2/8-10,root.height*1/2
+    #AutoClicker:
+    #    id: tier1
+    #    tier : "1"
+    #    text:"Autofeed Tier " + root.auto_tier1.tier
+    #    buy_cost: 20
+    #    feed_per_second:1
+    #    center: buy_tier1.center_x, buy_tier1.center_y-2*buy_tier1.font_size
 
-    AutoClicker:
-        id: tier2
-        tier : "2"
-        text:"Autofeed Tier " + root.auto_tier2.tier
-        feed_per_second:5
-        buy_cost: 200
-        center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
+   # Button:
+   #     id: buy_tier2
+   #     name:"buy_tier2"
+   #     background_color: 1,1,0,1
+   #     text:"+"+str(tier2.feed_per_second)+" : " + str(root.auto_tier2.buy_cost)
+   #     font_size: 20
+   #     on_press: root.buy_auto(root.auto_tier2)
+   #     pos:root.width*root.limit_x+10,0
+   #     size:root.width*2/8-10,root.height*1/2
+
+   # AutoClicker:
+   #     id: tier2
+   #     tier : "2"
+    #    text:"Autofeed Tier " + root.auto_tier2.tier
+    #    feed_per_second:5
+    #    buy_cost: 200
+    #    center:buy_tier2.center_x, buy_tier2.center_y-2*buy_tier2.font_size
 
    # Label:
    #     text:"Decay:-"+str(int(clicker_cell.fade_factor))

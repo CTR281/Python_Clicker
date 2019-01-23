@@ -15,6 +15,7 @@ from Clickercell import ClickerCell
 from Treasure import Treasure
 from Cannon import Cannon, Cannonball
 from Falling_spike import Falling_spike
+from Resetdecay import ResetDecay
 
 class ClickerGame(Widget):
 
@@ -28,8 +29,10 @@ class ClickerGame(Widget):
 
     tresor = ObjectProperty(None)
 
-    auto_tier1 = ObjectProperty(None)
-    auto_tier2 = ObjectProperty(None)
+    resetdecay = ObjectProperty(None)
+
+    #auto_tier1 = ObjectProperty(None)
+    #auto_tier2 = ObjectProperty(None)
 
     fade_factor_Lvl1 = NumericProperty(0.1/3.0)
     fade_factor_Lvl2 = NumericProperty(0.2/3.0)
@@ -81,7 +84,7 @@ class ClickerGame(Widget):
         self.spikes.uvsize = 10,-1
         self.dirt = Image(source="../Graphics/Background.png").texture
         self.dirt.wrap = 'repeat'
-        self.dirt.uvsize = 20,20
+        self.dirt.uvsize = 25,25
         self.bridge = Image(source="../Graphics/Bridge.png").texture
         self.bridge.wrap = 'repeat'
         self.bridge.uvsize = 7,1
@@ -112,8 +115,10 @@ class ClickerGame(Widget):
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
 
-    def buy_resetdecay(self,amount):
-
+    def buy_resetdecay(self,resetdecay):
+        if self.gold >= resetdecay.get_cost():
+            self.add_gold(-resetdecay.get_cost())
+            resetdecay.buy_reset(self)
 
    # def buy_auto(self, autoclicker):
    #     if self.cell.cell_weight >= autoclicker.get_cost():

@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, ObjectProperty, StringProperty, ObservableList
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty, BoundedNumericProperty
 from kivy.animation import Animation
 from kivy.uix.image import Image
 from kivy.core.window import Window
@@ -25,11 +25,27 @@ class ClickerGame(Widget):
     feed = ObjectProperty(None)
     feedpower = NumericProperty(1)
     feedpower_upgrade_cost = NumericProperty(10)
+
     tresor = ObjectProperty(None)
+
     auto_tier1 = ObjectProperty(None)
     auto_tier2 = ObjectProperty(None)
-    fade_factor = NumericProperty(0.1/3.0)
-    fade_list = [10 * k for k in range(1,10)]
+
+    fade_factor_Lvl1 = NumericProperty(0.1/3.0)
+    fade_factor_Lvl2 = NumericProperty(0.2/3.0)
+    fade_factor_Lvl3 = NumericProperty(0.3/3.0)
+    fade_factor_Lvlmax = NumericProperty(1.0/3.0)
+    fade_factor = 0.1/3.0
+
+    fade_factor_list = {"Lvl1": 0.1/3.0 , "Lvl2": 0.2/3.0, "Lvl3": 0.3/3.0, "Lvlmax": 1/3.0}#NumericProperty(0.1/3.0)
+    fade_timer_list = {"Lvl1": 0, "Lvl2": 60, "Lvl3": 120, "Lvlmax": 200, "Timer": 0, "Counter": 0}
+    fade_jauge = NumericProperty(0)
+    fade_jauge_color = NumericProperty(0)
+
+    fade_timer_Lvl1 = NumericProperty(fade_timer_list['Lvl1']/fade_timer_list['Lvlmax'])
+    fade_timer_Lvl2 = NumericProperty(fade_timer_list['Lvl2']/fade_timer_list['Lvlmax'])
+    fade_timer_Lvl3 = NumericProperty(fade_timer_list['Lvl3']/fade_timer_list['Lvlmax'])
+
     gold = NumericProperty(0)
     limit_x, limit_y =  6/8, 1/8
 
@@ -96,12 +112,15 @@ class ClickerGame(Widget):
         if (enemy.pos[0] < 0) or (enemy.pos[0] + enemy.size[0] > self.width * 3 / 4):
             enemy.velocity_x *= -1
 
-    def buy_auto(self, autoclicker):
-        if self.cell.cell_weight >= autoclicker.get_cost():
-            self.add_weight(-autoclicker.get_cost())
-            autoclicker.buy_auto()
-        else:
-            print("Not Enought weight")
+    def buy_resetdecay(self,amount):
+
+
+   # def buy_auto(self, autoclicker):
+   #     if self.cell.cell_weight >= autoclicker.get_cost():
+   #         self.add_weight(-autoclicker.get_cost())
+   #         autoclicker.buy_auto()
+   #     else:
+   #         print("Not Enought weight")
 
     def cannon_shoot(self):
         if self.cell.pos[0] < self.width * 3 / 8:
@@ -203,44 +222,57 @@ class ClickerGame(Widget):
 
     def update_time(self):
         self.counter += 1
+        if self.fade_timer_list["Timer"] < self.fade_timer_list["Lvlmax"]:
+            self.fade_timer_list["Counter"]+=1
+        for key in self.spawn_list:
+            self.enemy_type[key]['Counter'] += 1
         if self.counter % 60 == 0:
             self.timer +=1
-            for key in self.enemy_type.keys():
+            if self.fade_timer_list["Timer"] < self.fade_timer_list["Lvlmax"]:
+                self.fade_timer_list["Timer"]+=1
+            for key in self.spawn_list:
                 self.enemy_type[key]['Timer'] += 1
 
     def update_phase(self):
-        if self.timer % 60 == 0 and self.counter % 60 == 0:
+        if self.timer % 10 == 0 and self.counter % 60 == 0:
             self.phase += 1
 
-    def load_phase(self):   #update Tmin, Tmax, spawn_list, fade_factor,
+    def load_phase(self, phase=1):   #update Tmin, Tmax, spawn_list, fade_factor_list, fade_timer_list
+        self.phase = phase
         if self.phase == 1:
-            self.spawn_list = ['red', 'cannon', 'spike']
+            self.spawn_list = ['red']#, 'cannon', 'spike']
 
-        if self.phase == 2:
+        elif self.phase == 2:
             self.spawn_list = ['red', 'blue']
             self.enemy_type['red']['Tmin']= 5
             self.enemy_type['red']['Tmax']= 8.6
-            self.fade_factor = 0.2/3
+            self.fade_timer_list = {"Lvl1":0, "Lvl2": 45, "Lvl3": 90, "Lvlmax":135, "Timer": 0, "Counter": 0}
+            self.fade_factor_list = {"Lvl1": 0.1 / 3.0, "Lvl2": 0.2 / 3.0, "Lvl3": 0.3 / 3.0, "Lvlmax": 1 / 3.0}
+            self.fade_timer_Lvl1 = self.fade_timer_list['Lvl1'] / self.fade_timer_list['Lvlmax']
+            self.fade_timer_Lvl2 = self.fade_timer_list['Lvl2'] / self.fade_timer_list['Lvlmax']
+            self.fade_timer_Lvl3 = self.fade_timer_list['Lvl3'] / self.fade_timer_list['Lvlmax']
 
-        if self.phase == 3:
+        elif self.phase == 3:
             self.spawn_list = ['red', 'blue', 'yellow']
             self.enemy_type['red']['Tmin'] = 3
             self.enemy_type['red']['Tmax'] = 6.6
             self.enemy_type['blue']['Tmin'] = 15
             self.enemy_type['blue']['Tmax'] = 25.6
-            self.fade_factor = 0.3/3
+            self.fade_timer_list = {"Lvl1": 0, "Lvl2": 30, "Lvl3": 60, "Lvlmax": 90, "Timer": 0, "Counter": 0}
+            self.fade_factor_list = {"Lvl1": 0.2 / 3.0, "Lvl2": 0.3 / 3.0, "Lvl3": 0.4 / 3.0, "Lvlmax": 1 / 3.0}
 
-        if self.phase == 4:
+        elif self.phase == 4:
             self.enemy_type['red']['Tmin'] = 3
             self.enemy_type['red']['Tmax'] = 6.6
             self.enemy_type['blue']['Tmin'] = 8
             self.enemy_type['blue']['Tmax'] = 18.6
             self.enemy_type['yellow']['Tmin'] = 25
             self.enemy_type['yellow']['Tmax'] = 35.6
-            self.fade_factor = 0.4 / 3
+            self.fade_timer_list = {"Lvl1": 0, "Lvl2": 15, "Lvl3": 30, "Lvlmax": 45, "Timer": 0, "Counter": 0}
+            self.fade_factor_list = {"Lvl1": 0.3 / 3.0, "Lvl2": 0.4 / 3.0, "Lvl3": 0.5 / 3.0, "Lvlmax": 1 / 3.0}
 
     def on_phase(self, instance, value):
-        self.load_phase()
+        self.load_phase(self.phase)
 
     def will_spawn(self,enemy_type):  #Espérance: <t>=Tmin + 0.7*(Tmax-Tmin)**(5/6)
         if enemy_type['Timer'] > enemy_type['Tmin']:
@@ -277,14 +309,27 @@ class ClickerGame(Widget):
 
     def update_cell(self):
         self.fade()
-        if self.counter % 60 == 0:
-            self.autofeed()
+        #if self.counter % 60 == 0:
+        #    self.autofeed()
+
+    def update_fade(self):
+        self.fade_jauge = (self.fade_timer_list["Counter"]/(self.fade_timer_list["Lvlmax"]*60))*self.height* 1 / 2
+        self.fade_jauge_color =(self.fade_timer_list["Counter"]/(self.fade_timer_list["Lvlmax"]*60))*0.8
+        if 0 <= self.fade_timer_list["Timer"] <= self.fade_timer_list["Lvl1"]:
+            self.fade_factor = self.fade_factor_list["Lvl1"]
+        elif self.fade_timer_list["Lvl1"] <= self.fade_timer_list["Timer"] <= self.fade_timer_list["Lvl2"]:
+            self.fade_factor = self.fade_factor_list["Lvl2"]
+        elif self.fade_timer_list["Lvl2"] <= self.fade_timer_list["Timer"] <= self.fade_timer_list["Lvl3"]:
+            self.fade_factor = self.fade_factor_list["Lvl3"]
+        elif self.fade_timer_list["Lvl3"] <= self.fade_timer_list["Timer"] <= self.fade_timer_list["Lvlmax"]:
+            self.fade_factor = self.fade_factor_list["Lvlmax"]
 
     def update(self, dt):
         self.is_gameover()
         self.update_phase()
         self.update_enemy()
         self.update_cell()
+        self.update_fade()
         self.update_time()
 
 

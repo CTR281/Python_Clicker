@@ -95,6 +95,7 @@
     auto_tier2: tier2
 
 
+
     canvas:
         Color:
             rgba: 1,1,1,1
@@ -123,6 +124,37 @@
             id: horizontal
             size: root.width*root.limit_x, 10
             pos: 0, root.height*root.limit_y
+        Color:
+            rgba: 0,0,0,1
+        Rectangle:
+            id: fadejaugenoire
+            size: 10, root.height * 1 / 2
+            pos: 5, root.height*root.limit_y*2
+        Color:
+            rgba: 0.2+root.fade_jauge_color,0.8-root.fade_jauge_color,0,1
+        Rectangle:
+            id: fadejaugeorange
+            size: 10,root.fade_jauge
+            pos: 5, root.height*root.limit_y*2
+        Color:
+            rgba: 1,1,1,1
+        Rectangle:
+            id: fade_factor_lv1
+            size: 10, 2
+            pos: 5, root.height*root.limit_y*2 + root.fade_timer_Lvl1*root.height * 1 / 2
+        Rectangle:
+            id: fade_factor_lv2
+            size: 10, 2
+            pos: 5, root.height*root.limit_y*2 + root.fade_timer_Lvl2*root.height * 1 / 2
+        Rectangle:
+            id: fade_factor_lv3
+            size: 10, 2
+            pos: 5, root.height*root.limit_y*2 + root.fade_timer_Lvl3*root.height * 1 / 2
+        Rectangle:
+            id: fade_factor_lvmax
+            size: 10, 2
+            pos: 5, root.height*root.limit_y*2 + root.height * 1 / 2
+
 
     Treasure:
         id: tresor

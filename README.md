@@ -14,4 +14,4 @@
 
 #This game may feature sound. Also you should play in native format, as fullscreen may cause unexpected results on the enemies' behavior.
 
-###NB: Comptez 6-7mn pour explorer toutes les features que ce GOTY a à proposer.
+###NB: Comptez 6-7mn pour explorer toutes les features que ce GOTY a à proposer. Essayez de passer le stage 4 pour débloquer de nouveaux ennemis (cannon, piquants).

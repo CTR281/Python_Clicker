@@ -114,7 +114,7 @@
         Rectangle:
             id: background
             size: self.size
-            pos: 0, root.height * root.limit_y
+            pos: 0, 0#root.height * root.limit_y
             texture: root.dirt
         Rectangle:
             id: spikes
@@ -252,7 +252,8 @@
     Button:
         id: upgrade_feedpower
         name: "upgrade_feedpower"
-        text: "\n\n Makes you"+ "\n push harder"+"\n\n   Cost:" + str(root.feedpower_upgrade_cost)
+        background_color: 1,0.8,0,1
+        text: "\n\n Makes you"+ "\n   better at"+"\n everything"+"\n      (+1)"+"\n\n  Cost:" + str(root.feedpower_upgrade_cost)
         font_size: "15"
         on_press: root.upgrade_feedpower()
         size: root.width*2/8-10,root.height*1/2
@@ -321,14 +322,14 @@
     Button:
         id: buy_reset
         text: "\n\n\n Cost:%d" % resetbutton.buy_cost
-        background_color: 0,1,1,1
+        background_color: 1,0.8,0,1
         pos: root.width*root.limit_x+10, root.height*1/2
         size: root.width*2/8-10,root.height*1/2-upgrade.font_size
         on_press: root.buy_resetdecay(root.resetdecay)
 
     ResetDecay:
         id: resetbutton
-        buy_cost: 100
+        buy_cost: 250
         text:"Slow down!"
         font_size: "40"
         color: 0,0,1,1

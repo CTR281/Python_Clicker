@@ -34,7 +34,7 @@ class ClickerCell(Widget):
             self.color, self.color2 = 1, 1
         if self.invulnerable == 0:
             if self.collide_widget(enemy):
-                self.invulnerable = 1
+                self.invulnerable = 0.5
                 self.color, self.color2= 0, 0.8
                 if enemy.__class__.__name__ == "Enemy":
                     game.add_weight(-enemy.max)

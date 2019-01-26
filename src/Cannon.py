@@ -44,13 +44,13 @@ class Cannon(Widget):
             else:
                 self.source = '../graphics/Cannon/Cannon_3_left.png'
 
-        if game.width * 2/8 <= game.cell.pos[0] < game.width * 4/8:
+        if game.width * 2/8 <= game.cell.pos[0] < game.width * 4/8-game.cell.size[0]:
             if self.type == 'right_cannon':
                 self.source = '../graphics/Cannon/Cannon_2_right.png'
             else:
                 self.source = '../graphics/Cannon/Cannon_2_left.png'
 
-        if  game.width * 4/8 <= game.cell.pos[0] <= game.width * 6/8:
+        if  game.width * 4/8-game.cell.size[0] <= game.cell.pos[0] <= game.width * 6/8:
             if self.type == 'right_cannon':
                 self.source = '../graphics/Cannon/Cannon_3_right.png'
             else:

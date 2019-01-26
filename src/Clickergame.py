@@ -270,7 +270,7 @@ class ClickerGame(Widget):
 
         elif self.phase == 4:
             self.spawn_list = ['red', 'cannon', 'spike']
-            self.enemy_type['red']['Tmin'] = 5
+            self.enemy_type['red']['Tmin'] = 5.1
             self.enemy_type['red']['Tmax'] = 8.6
             self.fade_timer_list = {"Lvl1": 0, "Lvl2": 10, "Lvl3": 20, "Lvlmax": 30, "Timer": 0, "Counter": 0}
 

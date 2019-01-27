@@ -7,7 +7,7 @@ class Cannonball(Widget):
 
     velocity_x, velocity_y = NumericProperty(0), NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
-    damage = NumericProperty(25)
+    damage = NumericProperty(35)
 
     def __init__(self, x_min, x_max, Y_max, Y_min, **kwargs):
 

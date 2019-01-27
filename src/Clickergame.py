@@ -40,7 +40,7 @@ class ClickerGame(Widget):
     fade_factor_Lvlmax = NumericProperty(1.0/3.0)
     fade_factor = 0.1/3.0
 
-    fade_factor_list = {"Lvl1": 0.3/3.0 , "Lvl2": 0.4/3.0, "Lvl3": 0.5/3.0, "Lvlmax": 1/3.0}#NumericProperty(0.1/3.0)
+    fade_factor_list = {"Lvl1": 0.2/3.0 , "Lvl2": 0.3/3.0, "Lvl3": 0.4/3.0, "Lvlmax": 1/3.0}#NumericProperty(0.1/3.0)
     fade_timer_list = {"Lvl1": 0, "Lvl2": 20, "Lvl3": 40, "Lvlmax": 60, "Timer": 0, "Counter": 0}
     fade_jauge = NumericProperty(0)
     fade_jauge_color = NumericProperty(0)
@@ -69,7 +69,7 @@ class ClickerGame(Widget):
     enemy_red={"Class":"Enemy","Type":'red',"Tmin":8,"Tmax":13.6,"Timer":0, "Counter":0}
     enemy_blue={"Class":"Enemy","Type":'blue',"Tmin":30,"Tmax":40.6, "Timer":0, "Counter":0}
     enemy_yellow={"Class":"Enemy","Type":'yellow',"Tmin":40, "Tmax":50.6, "Timer":0, "Counter":0}
-    cannon = {"Class":"Cannonball","Type":'cannon',"Tmin":8, "Tmax":13.6, "Timer":0, "Counter":0}
+    cannon = {"Class":"Cannonball","Type":'cannon',"Tmin":12, "Tmax":18.6, "Timer":0, "Counter":0}
     falling_spike = {"Class":"Falling_spike","Type":'spike',"Tmin":3, "Tmax":8.6, "Timer":0, "Counter":0}
 
     enemy_type={'red':enemy_red, 'blue':enemy_blue, 'yellow':enemy_yellow,'cannon': cannon, 'spike': falling_spike}
@@ -159,7 +159,7 @@ class ClickerGame(Widget):
         if enemy.__class__.__name__ == 'Falling_spike':
             self.refresh_spike(enemy, enemy.pos[0])
         if killed == 1:
-            self.add_gold(enemy.max)
+            self.add_gold(enemy.max*4)
         self.remove_widget(enemy)
 
     def _keyboard_closed(self):
@@ -221,7 +221,7 @@ class ClickerGame(Widget):
         if self.gold >= self.feedpower_upgrade_cost and self.feedpower < 3:
             self.add_gold(-self.feedpower_upgrade_cost)
             self.feedpower += 1
-            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 5)
+            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 4)
         elif self.gold < self.feedpower_upgrade_cost:
             print("Not Enough Gold")
         elif self.feedpower == 3:
@@ -247,10 +247,10 @@ class ClickerGame(Widget):
     def load_phase(self, phase=1):   #update Tmin, Tmax, spawn_list, fade_factor_list, fade_timer_list
         self.phase = phase
         if self.phase == 1:
-            self.spawn_list = ['red']#, 'cannon', 'spike']
+            self.spawn_list = ['red', 'cannon']# 'spike']
 
         elif self.phase == 2:
-            self.spawn_list = ['red', 'blue']
+            self.spawn_list.append('blue')
             #self.enemy_type['red']['Tmin']= 5
             #self.enemy_type['red']['Tmax']= 8.6
             self.fade_timer_list = {"Lvl1":0, "Lvl2": 15, "Lvl3": 35, "Lvlmax":55, "Timer": 0, "Counter": 0}
@@ -260,7 +260,7 @@ class ClickerGame(Widget):
             self.fade_timer_Lvl3 = self.fade_timer_list['Lvl3'] / self.fade_timer_list['Lvlmax']
 
         elif self.phase == 3:
-            self.spawn_list = ['red', 'blue', 'yellow']
+            self.spawn_list.append('yellow')
             #self.enemy_type['red']['Tmin'] = 3
             #self.enemy_type['red']['Tmax'] = 6.6
             #self.enemy_type['blue']['Tmin'] = 15
@@ -272,6 +272,8 @@ class ClickerGame(Widget):
             self.spawn_list = ['red', 'cannon', 'spike']
             self.enemy_type['red']['Tmin'] = 5.1
             self.enemy_type['red']['Tmax'] = 8.6
+            self.cannon['Tmin'] = 4
+            self.cannon['Tmax'] = 7.6
             self.fade_timer_list = {"Lvl1": 0, "Lvl2": 10, "Lvl3": 20, "Lvlmax": 30, "Timer": 0, "Counter": 0}
 
         elif self.phase == 5:

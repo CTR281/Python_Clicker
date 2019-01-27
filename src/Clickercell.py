@@ -37,7 +37,7 @@ class ClickerCell(Widget):
                 self.invulnerable = 0.5
                 self.color, self.color2= 0, 0.8
                 if enemy.__class__.__name__ == "Enemy":
-                    game.add_weight(-enemy.max)
+                    game.add_weight(-enemy.max*4)
                     if enemy.type != 'blue':
                         game.kill_enemy(enemy, 0)
                 if enemy.__class__.__name__ == "Cannonball" or enemy.__class__.__name__ == "Falling_spike":

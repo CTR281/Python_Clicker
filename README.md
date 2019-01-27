@@ -5,13 +5,13 @@
   
  Le jeu est structuré en phases ou "stages" de 60 secondes chacune qui augmentent progressivement la difficulté. 
  
-#Ce jeu se joue au clavier et à la souris.
+#Se joue au clavier et à la souris.
 
 #Touches q d pour déplacer le personnage
 #Cliquer sur les ennemis pour les blesser
 
-#La jauge à gauche donne une idée de la vitesse de la plateforme. En gros, évitez qu'elle soit pleine à tout prix. Acheter des upgrades "Slow down!" pour la reset.
+#La jauge à gauche donne une idée de la vitesse de la plateforme. Pleine = Gameover. Acheter des upgrades "Slow down!" pour la reset.
 
-#This game may feature sound. Also you should play in native format, as fullscreen may cause unexpected results on the enemies' behavior.
+#Jouez en résolution par défaut (600*800)
 
-###NB: Comptez 6-7mn pour explorer toutes les features que le jeu propose. Essayez de passer le stage 4 pour débloquer de nouveaux ennemis (cannon, piquants).
+###NB: Comptez 6-7mn pour explorer toutes les features. Essayez de passer le stage 4 pour débloquer de nouveaux ennemis (cannon, piquants).

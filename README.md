@@ -1,7 +1,7 @@
 # "Survival Clicker" ou "Ca va cliquer!!" ou encore "Warning kv file inside"
 
-  Spelunky s'est perdu sur son chemin et a atteri sur votre plateforme. Vous pouvez la laisser conduire le personnage à une mort certaine ou vous pouvez aider notre compagnon à collecter de l'or afin de l'aider à survivre un peu plus longtemps.
-  La plateforme n'est pas le seul danger et ennemis et autres mécanismes chercheront à vous nuire.
+  Spelunky s'est perdu sur son chemin et a atteri sur votre plateforme. Vous pouvez la laisser conduire le personnage à une mort certaine, ou vous pouvez aider notre compagnon à collecter de l'or afin de l'aider à survivre un peu plus longtemps.
+  La plateforme n'est pas votre seul soucis et ennemis et autres mécanismes chercheront à vous nuire.
   
  Le jeu est structuré en phases ou "stages" de 60 secondes chacune qui augmentent progressivement la difficulté. 
  

@@ -25,7 +25,7 @@ class ClickerGame(Widget):
 
     feed = ObjectProperty(None)
     feedpower = NumericProperty(1)
-    feedpower_upgrade_cost = NumericProperty(250)
+    feedpower_upgrade_cost = NumericProperty(200)
 
     tresor = ObjectProperty(None)
 
@@ -221,7 +221,7 @@ class ClickerGame(Widget):
         if self.gold >= self.feedpower_upgrade_cost and self.feedpower < 3:
             self.add_gold(-self.feedpower_upgrade_cost)
             self.feedpower += 1
-            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 6)
+            self.feedpower_upgrade_cost = int(self.feedpower_upgrade_cost * 5)
         elif self.gold < self.feedpower_upgrade_cost:
             print("Not Enough Gold")
         elif self.feedpower == 3:

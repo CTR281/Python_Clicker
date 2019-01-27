@@ -40,7 +40,7 @@ class ClickerGame(Widget):
     fade_factor_Lvlmax = NumericProperty(1.0/3.0)
     fade_factor = 0.1/3.0
 
-    fade_factor_list = {"Lvl1": 0.2/3.0 , "Lvl2": 0.3/3.0, "Lvl3": 0.4/3.0, "Lvlmax": 1/3.0}#NumericProperty(0.1/3.0)
+    fade_factor_list = {"Lvl1": 0.1/3.0 , "Lvl2": 0.2/3.0, "Lvl3": 0.3/3.0, "Lvlmax": 1/3.0}#NumericProperty(0.1/3.0)
     fade_timer_list = {"Lvl1": 0, "Lvl2": 20, "Lvl3": 40, "Lvlmax": 60, "Timer": 0, "Counter": 0}
     fade_jauge = NumericProperty(0)
     fade_jauge_color = NumericProperty(0)
@@ -254,7 +254,7 @@ class ClickerGame(Widget):
             #self.enemy_type['red']['Tmin']= 5
             #self.enemy_type['red']['Tmax']= 8.6
             self.fade_timer_list = {"Lvl1":0, "Lvl2": 15, "Lvl3": 35, "Lvlmax":55, "Timer": 0, "Counter": 0}
-            self.fade_factor_list = {"Lvl1": 0.3 / 3.0, "Lvl2": 0.4 / 3.0, "Lvl3": 0.5 / 3.0, "Lvlmax": 2 / 3.0}
+            self.fade_factor_list = {"Lvl1": 0.2 / 3.0, "Lvl2": 0.3 / 3.0, "Lvl3": 0.4 / 3.0, "Lvlmax": 2 / 3.0}
             self.fade_timer_Lvl1 = self.fade_timer_list['Lvl1'] / self.fade_timer_list['Lvlmax']
             self.fade_timer_Lvl2 = self.fade_timer_list['Lvl2'] / self.fade_timer_list['Lvlmax']
             self.fade_timer_Lvl3 = self.fade_timer_list['Lvl3'] / self.fade_timer_list['Lvlmax']
@@ -266,7 +266,7 @@ class ClickerGame(Widget):
             #self.enemy_type['blue']['Tmin'] = 15
             #self.enemy_type['blue']['Tmax'] = 25.6
             self.fade_timer_list = {"Lvl1": 0, "Lvl2": 12, "Lvl3": 25, "Lvlmax": 50, "Timer": 0, "Counter": 0}
-            self.fade_factor_list = {"Lvl1": 0.4 / 3.0, "Lvl2": 0.5 / 3.0, "Lvl3": 0.6 / 3.0, "Lvlmax": 3 / 3.0}
+            self.fade_factor_list = {"Lvl1": 0.3 / 3.0, "Lvl2": 0.4 / 3.0, "Lvl3": 0.5 / 3.0, "Lvlmax": 3 / 3.0}
 
         elif self.phase == 4:
             self.spawn_list = ['red', 'cannon', 'spike']
